@@ -22,5 +22,7 @@ namespace ToolWorkshop.Data.Entities
         public string ImageFullPath => ToolImageId == Guid.Empty
             ? $"https://localhost:7057/images/noimage.png"
             : $"https://shoppingzulu.blob.core.windows.net/users/{ToolImageId}";
+
+        public virtual ICollection<Movement_Detail>? MovementDetails { get; set; }
     }
 }
