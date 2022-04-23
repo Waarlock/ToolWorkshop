@@ -41,8 +41,7 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public String Document { get; set; }
 
-        [Display(Name = "Foto")]
-        public Guid ImageId { get; set; }
+        
 
         public enum StatusType { Active, Inactive};
 
@@ -52,6 +51,9 @@ namespace ToolWorkshop.Data.Entities
         public StatusType status { get; set; }
 
         //TODO: Organizar
+        [Display(Name = "Foto")]
+        public Guid ImageId { get; set; }
+
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7057/images/noimage.png"
