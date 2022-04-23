@@ -60,7 +60,7 @@ namespace ToolWorkshop.Data.Entities
         public Role_User? role_UserId;
 
         public virtual ICollection<Role>? Roles { get; set; }
-        
+
         [Display(Name = "Usuario")]
         public string FullName => $"{Name} {LastName}";
 
