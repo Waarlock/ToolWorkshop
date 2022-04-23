@@ -19,5 +19,7 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Almacen")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public Warehouse WarehouseId { get; set; }
+
+        public virtual ICollection<Catalog>? Catalogs { get; set; }
     }
 }

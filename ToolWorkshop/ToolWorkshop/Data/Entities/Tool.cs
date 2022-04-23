@@ -19,5 +19,11 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Descripcion de Herramienta")]
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
+
+        public Category_Tool? Category_ToolId { get; set; }
+
+        public virtual ICollection<Category>? Categories { get; set; }
+
+        public virtual ICollection<Catalog>? Catalogs { get; set; }
     }
 }

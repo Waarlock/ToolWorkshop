@@ -23,7 +23,7 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Estado")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        MovementDetailStatus Return_Status { get; set; }
+        MovementDetailStatus MovementDetailStatus { get; set; }
 
         [Display(Name = "Observaciones de Devolucion")]
         [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]

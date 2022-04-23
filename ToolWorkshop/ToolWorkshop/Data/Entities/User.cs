@@ -41,14 +41,9 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public String Document { get; set; }
 
-        
-
-        public enum StatusType { Active, Inactive};
-
         [Display(Name = "Estado")]
-        [MaxLength(20, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public StatusType status { get; set; }
+        public UserStatus Status { get; set; }
 
         //TODO: Organizar
         [Display(Name = "Foto")]
@@ -59,8 +54,7 @@ namespace ToolWorkshop.Data.Entities
             ? $"https://localhost:7057/images/noimage.png"
             : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
 
-        public Role_User? role_UserId;
-
+        public Role_User? Role_UserId;
         public virtual ICollection<Role>? Roles { get; set; }
 
         [Display(Name = "Usuario")]
