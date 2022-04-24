@@ -15,13 +15,13 @@ namespace ToolWorkshop.Data.Entities
         public DateTime Start_DateTime { get; set; }
 
         [Display(Name = "Fecha de Finalizacion")]
-        public DateTime End_DateTime { get; set; }
+        public DateTime? End_DateTime { get; set; }
 
         [Display(Name = "Estado")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         MovementStatus status { get; set; }
 
-        public User User { get; set; }
+        //public User User { get; set; }
 
         [Display(Name = "Detalles de Movimiento")]
         public virtual ICollection<Movement_Detail>? Details { get; set; }

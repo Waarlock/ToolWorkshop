@@ -62,7 +62,7 @@ namespace ToolWorkshop.Data.Entities
             : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
 
         public ICollection<Role>? Roles;
-        public ICollection<Movement>? Movements;
+        //public ICollection<Movement>? Movements;
         public ICollection<Temporal_Movement>? Temporal_Movements;
 
         [Display(Name = "Usuario")]

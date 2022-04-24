@@ -266,19 +266,13 @@ namespace ToolWorkshop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("End_DateTime")
+                    b.Property<DateTime?>("End_DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Start_DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Movements");
                 });
@@ -645,17 +639,6 @@ namespace ToolWorkshop.Migrations
                         .IsRequired();
 
                     b.Navigation("State");
-                });
-
-            modelBuilder.Entity("ToolWorkshop.Data.Entities.Movement", b =>
-                {
-                    b.HasOne("ToolWorkshop.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Movement_Detail", b =>

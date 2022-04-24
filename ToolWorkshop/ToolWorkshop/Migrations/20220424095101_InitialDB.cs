@@ -83,6 +83,20 @@ namespace ToolWorkshop.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Movements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Start_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    End_DateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movements", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tools",
                 columns: table => new
                 {
@@ -197,27 +211,6 @@ namespace ToolWorkshop.Migrations
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Movements",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Start_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Movements", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Movements_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -485,11 +478,6 @@ namespace ToolWorkshop.Migrations
                 name: "IX_Movement_Details_Temporal_MovementId",
                 table: "Movement_Details",
                 column: "Temporal_MovementId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Movements_UserId",
-                table: "Movements",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Planograms_WarehouseId",

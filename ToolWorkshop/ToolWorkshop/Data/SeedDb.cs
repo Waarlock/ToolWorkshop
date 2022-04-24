@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ToolWorkshop.Data.Entities;
@@ -21,7 +22,8 @@ namespace ToolWorkshop.Data
         public async Task SeedAsync()
         {
 
-            await _context.Database.EnsureCreatedAsync();
+            //await _context.Database.EnsureCreatedAsync();
+            _context.Database.Migrate();
             await CheckCategoriesAsync();
             await CheckCountriesAsync();
             await CheckRolesAsync();
