@@ -78,12 +78,16 @@ namespace ToolWorkshop.Helpers
         public async Task<User> GetUserAsync(string email)
         {
             return await _context.Users
+               // .Include(u => u.City)
+                //.ThenInclude(c => c.State)
+               // .ThenInclude(s => s.Country)
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> GetUserAsync(Guid userId)
         {
             return await _context.Users
+
                 .FirstOrDefaultAsync(u => u.ImageId == userId);
         }
 
@@ -94,7 +98,7 @@ namespace ToolWorkshop.Helpers
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
         {
-            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, true);
+            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
         }
 
         public async Task LogoutAsync()

@@ -9,7 +9,7 @@ namespace ToolWorkshop.Helpers
     {
         Task<IEnumerable<SelectListItem>> GetComboCategoriesAsync();
 
-        Task<IEnumerable<SelectListItem>> GetComboCategoriesAsync(IEnumerable<Category> filter);
+        //Task<IEnumerable<SelectListItem>> GetComboCategoriesAsync(IEnumerable<Category> filter);
 
         Task<IEnumerable<SelectListItem>> GetComboCountriesAsync();
 

@@ -35,7 +35,7 @@ namespace ToolWorkshop.Data
         }
         
         private async Task<User> CheckUserAsync(
-     string document,
+     string document, 
      string firstName,
      string lastName,
      string email,
@@ -53,6 +53,7 @@ namespace ToolWorkshop.Data
                     Email = email,
                     UserName = email,
                     Document = document,
+                    City = _context.Cities.FirstOrDefault(),
                     UserType = userType,
                 };
 

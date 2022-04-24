@@ -19,16 +19,19 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public string LastName { get; set; }
+        /*
+                [Display(Name = "Login")]
+                [MaxLength(16, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+                [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+                public string UserName { get; set; }
 
-        [Display(Name = "Login")]
-        [MaxLength(16, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public string UserName { get; set; }
-
-        [Display(Name = "Password")]
-        [MaxLength(512, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public string Password { get; set; }
+                [Display(Name = "Password")]
+                [MaxLength(512, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+                [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+                public string Password { get; set; }
+        */
+        [Display(Name = "Ciudad")]
+        public City City { get; set; }
 
         [Display(Name = "Correo")]
         [MaxLength(64, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -48,9 +51,6 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public UserStatus Status { get; set; }
 
-        [Display(Name = "Tipo de usuario")]
-        public UserType UserType { get; set; }
-
         //TODO: Organizar
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
@@ -58,8 +58,12 @@ namespace ToolWorkshop.Data.Entities
         //TODO: Pending to put the correct paths
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://localhost:7057/images/noimage.png"
-            : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
+            ? $"https://localhost:7005/images/noimage.png"
+            : $"https://toolorkshop.blob.core.windows.net/users/{ImageId}";
+
+        [Display(Name ="Tipo de Usuario")]
+        public UserType UserType { get; set; }
+
 
         public ICollection<Role>? Roles;
         //public ICollection<Movement>? Movements;
