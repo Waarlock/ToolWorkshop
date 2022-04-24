@@ -20,7 +20,7 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
 
-        public Category_Tool? Category_ToolId { get; set; }
+        public virtual ICollection<Category_Tool>? Category_Tools { get; set; }
 
         public virtual ICollection<Category>? Categories { get; set; }
 

@@ -17,6 +17,8 @@ namespace ToolWorkshop.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Movement_Detail>().HasOne(e => e.Temporal_MovementId).WithMany().OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Movement_Detail>().HasOne(e => e.MovementId).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Country>().HasIndex(c => c.Name).IsUnique();
             modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
         }

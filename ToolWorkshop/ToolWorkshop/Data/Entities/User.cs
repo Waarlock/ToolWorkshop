@@ -59,7 +59,7 @@ namespace ToolWorkshop.Data.Entities
             ? $"https://localhost:7057/images/noimage.png"
             : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
 
-        public Role_User? Role_UserId;
+        public ICollection<Role_User>? Role_Users;
         public virtual ICollection<Role>? Roles { get; set; }
 
         [Display(Name = "Usuario")]
