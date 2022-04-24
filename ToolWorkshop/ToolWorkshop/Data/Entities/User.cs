@@ -18,15 +18,8 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public string LastName { get; set; }
 
-        [Display(Name = "Login")]
-        [MaxLength(16, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public string UserName { get; set; }
-
-        [Display(Name = "Password")]
-        [MaxLength(512, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public string Password { get; set; }
+        [Display(Name = "Ciudad")]
+        public City City { get; set; }
 
         [Display(Name = "Correo")]
         [MaxLength(64, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -56,7 +49,7 @@ namespace ToolWorkshop.Data.Entities
             ? $"https://localhost:7005/images/noimage.png"
             : $"https://toolorkshop.blob.core.windows.net/users/{ImageId}";
 
-        [Display(Name ="Tipo de Usuario")]
+        [Display(Name = "Tipo de Usuario")]
         public UserType UserType { get; set; }
 
 

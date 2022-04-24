@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace ToolWorkshop.Data
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly IBlobHelper _blobHelper;
 
-        public SeedDb(DataContext context, IUserHelper userhelper)
+        public SeedDb(DataContext context, IUserHelper userhelper, IBlobHelper blobHelper)
         {
             _context = context;
             _userHelper = userhelper;
+            _blobHelper = blobHelper;
         }
 
         public async Task SeedAsync()
@@ -33,15 +36,16 @@ namespace ToolWorkshop.Data
 
 
         }
-        
+
         private async Task<User> CheckUserAsync(
-     string document, 
-     string firstName,
-     string lastName,
-     string email,
-     string phone,
-     string address,
-     UserType userType)
+         string document, 
+         string firstName,
+         string lastName,
+         string email,
+         string phone,
+         string address,
+         UserType userType
+        )
         {
             User user = await _userHelper.GetUserAsync(email);
             if (user == null)
@@ -54,6 +58,8 @@ namespace ToolWorkshop.Data
                     UserName = email,
                     Document = document,
                     UserType = userType,
+                    PhoneNumber = phone,
+                    City = new()
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");
@@ -137,14 +143,63 @@ namespace ToolWorkshop.Data
 
                   await _context.SaveChangesAsync();
               }
-     
+
+        /*
+         *Categories = new List<Category>()
+                    {
+                        new Category()
+                        {
+                            Name=
+                        }
+                    }
+         */
 
         private async Task CheckCategoriesAsync()
         {
             if (!_context.Categories.Any())
             {
-                _context.Categories.Add(new Category { Name = "Caja de Herramientas" });
+                _context.Categories.Add(new Category { 
+                    Name = "Herramientas Mecánicas",
+                    Tools = new Tool[] {
+                       new Tool {
+                            Name = "Taladro",
+                            Description = "Taladro",
+                            EAN = "345678901234567890"
+                       },
+                       new Tool
+                        {
+                            Name = "Sierra Electrica",
+                            Description = "Sierra",
+                            EAN = "234567890123456789"
+                        }
+                    }
+                });
+
+                _context.Categories.Add(new Category { 
+                    Name = "Herramienta de montaje:",
+                    Tools = new Tool[] {
+                        new Tool
+                        {
+                            Name = "Destornillador",
+                            Description = "Destornillador",
+                            EAN = "567890123456789012"
+                        }
+                    }
+                });
+
                 _context.Categories.Add(new Category { Name = "Medicion" });
+                _context.Categories.Add(new Category { 
+                    Name = "Caja de Herramientas",
+                    Tools = new Tool[]
+                    {
+                        new Tool
+                        {
+                            Name = "LLave Inglesa",
+                            Description = "LLave Inglesa",
+                            EAN = "456789012345678901"
+                        }
+                    }
+                });
 
                 await _context.SaveChangesAsync();
             }

@@ -12,7 +12,7 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220424095101_InitialDB")]
+    [Migration("20220424181554_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,6 +216,9 @@ namespace ToolWorkshop.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Categories");
                 });
 
@@ -256,6 +259,9 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Countries");
                 });
@@ -428,6 +434,9 @@ namespace ToolWorkshop.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -475,11 +484,6 @@ namespace ToolWorkshop.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -499,7 +503,6 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -507,6 +510,8 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -699,6 +704,17 @@ namespace ToolWorkshop.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>
+                {
+                    b.HasOne("ToolWorkshop.Data.Entities.City", "City")
+                        .WithMany("Users")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Warehouse", b =>
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.City", "City")
@@ -713,6 +729,11 @@ namespace ToolWorkshop.Migrations
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Catalog", b =>
                 {
                     b.Navigation("MovementDetails");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.City", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Country", b =>

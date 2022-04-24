@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using ToolWorkshop.Common;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
@@ -48,18 +51,18 @@ namespace ToolWorkshop.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                //if (result.IsLockedOut)
-                //{
-                //    ModelState.AddModelError(string.Empty, "Ha superado el máximo número de intentos, su cuenta está bloqueada, intente de nuevo en 5 minutos.");
-                //}
-                //else if (result.IsNotAllowed)
-                //{
-                //    ModelState.AddModelError(string.Empty, "El usuario no ha sido habilitado, debes de seguir las instrucciones del correo enviado para poder habilitarte en el sistema.");
-                //}
-                //else
-                //{
-               /* //*/   ModelState.AddModelError(string.Empty, "Email o contraseña incorrectos.");
-                //}
+                if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "Ha superado el máximo número de intentos, su cuenta está bloqueada, intente de nuevo en 5 minutos.");
+                }
+                else if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "El usuario no ha sido habilitado, debes de seguir las instrucciones del correo enviado para poder habilitarte en el sistema.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Email o contraseña incorrectos.");
+                }
             }
 
             return View(model);
@@ -110,21 +113,21 @@ namespace ToolWorkshop.Controllers
 
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
-                    "ConfirmEmail", 
-                    "Account", 
+                    "ConfirmEmail",
+                    "Account",
                     new
                     {
                         userid = user.Id,
                         token = myToken
-                    }, 
+                    },
                     protocol: HttpContext.Request.Scheme
                );
 
                 Response response = _mailHelper.SendMail(
                     $"{model.FirstName} {model.LastName}",
                     model.Username,
-                    "Shopping - Confirmación de Email",
-                    $"<h1>Shopping - Confirmación de Email</h1>" +
+                    "ToolWorkshop - Confirmación de Email",
+                    $"<h1>ToolWorkshop - Confirmación de Email</h1>" +
                         $"Para habilitar el usuario por favor hacer click en el siguiente link:, " +
                         $"<hr/><br/><p><a href = \"{tokenLink}\">Confirmar Email</a></p>");
                 if (response.IsSuccess)
@@ -273,8 +276,8 @@ namespace ToolWorkshop.Controllers
                 _mailHelper.SendMail(
                     $"{user.FullName}",
                     model.Email,
-                    "Shopping - Recuperación de Contraseña",
-                    $"<h1>Shopping - Recuperación de Contraseña</h1>" +
+                    "ToolWorkshop - Recuperación de Contraseña",
+                    $"<h1>ToolWorkshop - Recuperación de Contraseña</h1>" +
                     $"Para recuperar la contraseña haga click en el siguiente enlace:" +
                     $"<p><a href = \"{link}\">Reset Password</a></p>");
                 ViewBag.Message = "Las instrucciones para recuperar la contraseña han sido enviadas a su correo.";

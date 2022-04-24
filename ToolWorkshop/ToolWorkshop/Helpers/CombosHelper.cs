@@ -27,7 +27,7 @@ namespace ToolWorkshop.Helpers
                 .OrderBy(c => c.Text)
                 .ToListAsync();
 
-            list.Insert(0, new SelectListItem { Text = "[Seleccione una categoría...", Value = "0" });
+            list.Insert(0, new SelectListItem { Text = "[Seleccione una herramienta...", Value = "0" });
             return list;
         }
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Models;
