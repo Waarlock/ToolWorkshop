@@ -22,8 +22,8 @@ namespace ToolWorkshop.Data
         public async Task SeedAsync()
         {
 
-            //await _context.Database.EnsureCreatedAsync();
-            _context.Database.Migrate();
+            await _context.Database.EnsureCreatedAsync();
+            //_context.Database.Migrate();
             await CheckCategoriesAsync();
             await CheckCountriesAsync();
             await CheckRolesAsync();
