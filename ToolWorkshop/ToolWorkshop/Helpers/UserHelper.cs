@@ -78,9 +78,9 @@ namespace ToolWorkshop.Helpers
         public async Task<User> GetUserAsync(string email)
         {
             return await _context.Users
-               // .Include(u => u.City)
-                //.ThenInclude(c => c.State)
-               // .ThenInclude(s => s.Country)
+               .Include(u => u.City)
+                .ThenInclude(c => c.State)
+                .ThenInclude(s => s.Country)
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
