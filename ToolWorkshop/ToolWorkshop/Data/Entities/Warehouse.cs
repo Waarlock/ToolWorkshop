@@ -17,7 +17,7 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Ciudad")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public City city { get; set; }
+        public City City { get; set; }
 
     }
 }

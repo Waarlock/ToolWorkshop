@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ToolWorkshop.Enums;
 
 namespace ToolWorkshop.Data.Entities
@@ -18,9 +21,7 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         MovementStatus status { get; set; }
 
-        [Display(Name = "Usuario")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public User UserId { get; set; }
+        public User User { get; set; }
 
         [Display(Name = "Detalles de Movimiento")]
         public virtual ICollection<Movement_Detail>? Details { get; set; }

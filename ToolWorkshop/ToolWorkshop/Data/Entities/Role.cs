@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ToolWorkshop.Data.Entities
 {
@@ -15,8 +16,7 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
 
-        public virtual ICollection<Role_User>? Role_UserId { get; set; }
-
         public virtual ICollection<User>? Users { get; set; }
+
     }
 }

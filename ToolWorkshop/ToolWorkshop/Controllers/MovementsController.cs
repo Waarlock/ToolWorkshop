@@ -23,7 +23,7 @@ namespace ToolWorkshop.Controllers
         // GET: Movements
         public async Task<IActionResult> Index()
         {
-            return View(await _context.movements.ToListAsync());
+            return View(await _context.Movements.ToListAsync());
         }
 
         // GET: Movements/Details/5
@@ -34,7 +34,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var movement = await _context.movements
+            var movement = await _context.Movements
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movement == null)
             {
@@ -74,7 +74,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var movement = await _context.movements.FindAsync(id);
+            var movement = await _context.Movements.FindAsync(id);
             if (movement == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var movement = await _context.movements
+            var movement = await _context.Movements
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movement == null)
             {
@@ -140,15 +140,15 @@ namespace ToolWorkshop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movement = await _context.movements.FindAsync(id);
-            _context.movements.Remove(movement);
+            var movement = await _context.Movements.FindAsync(id);
+            _context.Movements.Remove(movement);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MovementExists(int id)
         {
-            return _context.movements.Any(e => e.Id == id);
+            return _context.Movements.Any(e => e.Id == id);
         }
     }
 }

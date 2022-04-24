@@ -13,6 +13,6 @@ namespace ToolWorkshop.Data.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
-        public State StateId { get; set; }
+        public State State { get; set; }
     }
 }

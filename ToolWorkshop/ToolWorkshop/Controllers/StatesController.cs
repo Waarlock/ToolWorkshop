@@ -23,7 +23,7 @@ namespace ToolWorkshop.Controllers
         // GET: States
         public async Task<IActionResult> Index()
         {
-            return View(await _context.states.ToListAsync());
+            return View(await _context.States.ToListAsync());
         }
 
         // GET: States/Details/5
@@ -34,7 +34,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var state = await _context.states
+            var state = await _context.States
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (state == null)
             {
@@ -74,7 +74,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var state = await _context.states.FindAsync(id);
+            var state = await _context.States.FindAsync(id);
             if (state == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var state = await _context.states
+            var state = await _context.States
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (state == null)
             {
@@ -140,15 +140,15 @@ namespace ToolWorkshop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var state = await _context.states.FindAsync(id);
-            _context.states.Remove(state);
+            var state = await _context.States.FindAsync(id);
+            _context.States.Remove(state);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StateExists(int id)
         {
-            return _context.states.Any(e => e.Id == id);
+            return _context.States.Any(e => e.Id == id);
         }
     }
 }

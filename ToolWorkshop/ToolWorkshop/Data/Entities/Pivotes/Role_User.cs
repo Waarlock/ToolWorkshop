@@ -1,17 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToolWorkshop.Data.Entities
 {
     public class Role_User
     {
-        public int Id { get; set; }
+        public int RoleId { get; set; }
 
-        [Display(Name = "Rol")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public Role RoleId { get; set; }
+        public int ProjectId { get; set; }
 
-        [Display(Name = "Usuario")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public User UserId { get; set; }
+        [ForeignKey("RoleId")]
+        public Role Role { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
     }
 }

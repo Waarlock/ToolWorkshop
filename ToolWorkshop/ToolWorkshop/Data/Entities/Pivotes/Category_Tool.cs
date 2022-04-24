@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToolWorkshop.Data.Entities
 {
     public class Category_Tool
     {
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
+        public int ToolId { get; set; }
 
-        [Display(Name = "Categoria")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public Category CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
 
-        [Display(Name = "Herramienta")]
-        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public Tool ToolId { get; set; }
+        [ForeignKey("ToolId")]
+        public Tool Tool { get; set; }
     }
 }

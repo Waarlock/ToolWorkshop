@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Enums;
 
 namespace ToolWorkshop.Data.Entities
@@ -20,7 +22,7 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Usuario")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public User UserId { get; set; }
+        public User User { get; set; }
 
         [Display(Name = "Detalles de Movimiento")]
         public virtual ICollection<Movement_Detail>? Details { get; set; }
