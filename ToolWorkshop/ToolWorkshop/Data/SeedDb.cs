@@ -43,14 +43,11 @@ namespace ToolWorkshop.Data
             {
                 user = new User
                 {
-                    FirstName = firstName,
+                    Name = firstName,
                     LastName = lastName,
                     Email = email,
                     UserName = email,
-                    PhoneNumber = phone,
-                    Address = address,
                     Document = document,
-                //TODO:    City = _context.Cities.FirstOrDefault(),
                     UserType = userType,
                 };
 

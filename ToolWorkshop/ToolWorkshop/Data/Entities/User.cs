@@ -46,6 +46,9 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public UserStatus Status { get; set; }
 
+        [Display(Name = "Tipo de usuario")]
+        public UserType UserType { get; set; }
+
         //TODO: Organizar
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
