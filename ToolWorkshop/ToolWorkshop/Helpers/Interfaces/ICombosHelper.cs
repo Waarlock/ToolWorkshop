@@ -16,5 +16,7 @@ namespace ToolWorkshop.Helpers
         Task<IEnumerable<SelectListItem>> GetComboStatesAsync(int countryId);
 
         Task<IEnumerable<SelectListItem>> GetComboCitiesAsync(int stateId);
+
+        Task<IEnumerable<SelectListItem>> GetComboCatalogAsync(int catalogId);
     }
 }

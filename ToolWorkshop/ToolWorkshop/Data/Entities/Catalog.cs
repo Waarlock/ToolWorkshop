@@ -36,5 +36,8 @@ namespace ToolWorkshop.Data.Entities
         public virtual ICollection<Movement_Detail>? MovementDetails { get; set; }
 
 
+        [Display(Name = "Herramienta")]
+        public string FullName => $"{SKU} - {Tool.Name}";
+
     }
 }

@@ -1,16 +1,15 @@
 ﻿@model ToolWorkshop.Data.Entities.Movement
 
-@{
-    ViewData["Title"] = "Delete";
-}
-
-<h1>Borrar</h1>
-
-<h3>Está seguro de que quiere borrarlo?</h3>
 <div>
     <h4>Movimiento</h4>
     <hr />
     <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Start_DateTime)
         </dt>
@@ -24,10 +23,4 @@
             @Html.DisplayFor(model => model.End_DateTime)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-outline-danger" /> |
-        <a asp-action="Index" class="btn btn-outline-success">Regresar</a>
-    </form>
 </div>
