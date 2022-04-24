@@ -11,8 +11,20 @@ namespace ToolWorkshop.Data
         {
         }
 
-        public DbSet<Country> countries { get; set; }
+        public DbSet<Catalog> catalogs { get; set; }
         public DbSet<Category> categories { get; set; }
+        public DbSet<Movement> movements { get; set; }
+        public DbSet<Temporal_Movement> temporal_movements { get; set; }
+        public DbSet<Movement_Detail> movement_Details { get; set; }
+        public DbSet<Planogram> planograms { get; set; }
+        public DbSet<Role> roles { get; set; }
+        public DbSet<Country> countries { get; set; }
+        public DbSet<State> states { get; set; }
+        public DbSet<City> cities { get; set; }
+        public DbSet<Tool> tools { get; set; }
+        public DbSet<User> users { get; set; }
+        public DbSet<Warehouse> warehouses { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
