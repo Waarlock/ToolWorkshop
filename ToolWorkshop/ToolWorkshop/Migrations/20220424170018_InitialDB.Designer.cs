@@ -12,7 +12,7 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220424095101_InitialDB")]
+    [Migration("20220424170018_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,6 +216,9 @@ namespace ToolWorkshop.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Categories");
                 });
 
@@ -256,6 +259,9 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Countries");
                 });
@@ -344,6 +350,29 @@ namespace ToolWorkshop.Migrations
                     b.ToTable("Planograms");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.State", b =>
                 {
                     b.Property<int>("Id")
@@ -428,6 +457,9 @@ namespace ToolWorkshop.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -489,6 +521,9 @@ namespace ToolWorkshop.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -508,6 +543,8 @@ namespace ToolWorkshop.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -515,6 +552,8 @@ namespace ToolWorkshop.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -699,6 +738,17 @@ namespace ToolWorkshop.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>
+                {
+                    b.HasOne("ToolWorkshop.Data.Entities.City", null)
+                        .WithMany("Users")
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("ToolWorkshop.Data.Entities.Role", null)
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Warehouse", b =>
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.City", "City")
@@ -715,6 +765,11 @@ namespace ToolWorkshop.Migrations
                     b.Navigation("MovementDetails");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.City", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Country", b =>
                 {
                     b.Navigation("States");
@@ -728,6 +783,11 @@ namespace ToolWorkshop.Migrations
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Planogram", b =>
                 {
                     b.Navigation("Catalogs");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.State", b =>
