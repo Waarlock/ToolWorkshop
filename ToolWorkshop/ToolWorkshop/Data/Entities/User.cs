@@ -4,7 +4,7 @@ using ToolWorkshop.Enums;
 
 namespace ToolWorkshop.Data.Entities
 {
-    public class User
+    public class User : IdentityUser
     {
         public int Id { get; set; }
 
