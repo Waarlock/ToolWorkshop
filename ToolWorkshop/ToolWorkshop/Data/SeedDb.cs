@@ -66,11 +66,11 @@ namespace ToolWorkshop.Data
 
         }
 
-        /*      private async Task CheckCountriesAsync()
+            private async Task CheckCountriesAsync()
               {
-                  if (!_context.Countries.Any())
+                  if (!_context.countries.Any())
                   {
-                      _context.Countries.Add(new Country
+                      _context.countries.Add(new Country
                       {
                           Name = "Colombia",
                           States = new List<State>()
@@ -99,7 +99,7 @@ namespace ToolWorkshop.Data
                               },
                           }
                       });
-                      _context.Countries.Add(new Country
+                      _context.countries.Add(new Country
                       {
                           Name = "Estados Unidos",
                           States = new List<State>()
@@ -132,7 +132,7 @@ namespace ToolWorkshop.Data
 
                   await _context.SaveChangesAsync();
               }
-      */
+     
 
         private async Task CheckCategoriesAsync()
         {
