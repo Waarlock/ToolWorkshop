@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ToolWorkshop.Data.Entities
@@ -13,7 +15,7 @@ namespace ToolWorkshop.Data.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
-        public Country CountryId { get; set; }
+        public Country Country { get; set; }
 
         public ICollection<City>? Cities { get; set; }
     }

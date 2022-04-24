@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ToolWorkshop.Enums;
 
 namespace ToolWorkshop.Data.Entities
@@ -8,14 +9,14 @@ namespace ToolWorkshop.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Movimiento")]
-        public Temporal_Movement Temporal_MovementId { get; set; }
+        public Temporal_Movement? Temporal_Movement { get; set; }
 
         [Display(Name = "Movimiento")]
-        public Movement MovementId { get; set; }
+        public Movement? Movement { get; set; }
 
         [Display(Name = "Catalogo")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public Catalog CatalogId { get; set; }
+        public Catalog Catalog { get; set; }
 
         [Display(Name = "Observaciones")]
         [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]

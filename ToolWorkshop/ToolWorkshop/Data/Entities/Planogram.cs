@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ToolWorkshop.Data.Entities
 {
     public class Planogram
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Tipo de Planograma")]
@@ -18,7 +20,7 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Almacen")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public Warehouse WarehouseId { get; set; }
+        public Warehouse? Warehouse { get; set; }
 
         public virtual ICollection<Catalog>? Catalogs { get; set; }
     }

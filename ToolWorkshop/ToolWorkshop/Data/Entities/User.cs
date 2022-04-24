@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Enums;
 
@@ -59,8 +61,9 @@ namespace ToolWorkshop.Data.Entities
             ? $"https://localhost:7057/images/noimage.png"
             : $"https://shoppingzulu.blob.core.windows.net/users/{ImageId}";
 
-        public ICollection<Role_User>? Role_Users;
-        public virtual ICollection<Role>? Roles { get; set; }
+        public ICollection<Role>? Roles;
+        public ICollection<Movement>? Movements;
+        public ICollection<Temporal_Movement>? Temporal_Movements;
 
         [Display(Name = "Usuario")]
         public string FullName => $"{Name} {LastName}";

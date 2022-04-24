@@ -23,7 +23,7 @@ namespace ToolWorkshop.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.cities.ToListAsync());
+            return View(await _context.Cities.ToListAsync());
         }
 
         // GET: Cities/Details/5
@@ -34,7 +34,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var city = await _context.cities
+            var city = await _context.Cities
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {
@@ -74,7 +74,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var city = await _context.cities.FindAsync(id);
+            var city = await _context.Cities.FindAsync(id);
             if (city == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var city = await _context.cities
+            var city = await _context.Cities
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {
@@ -140,15 +140,15 @@ namespace ToolWorkshop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var city = await _context.cities.FindAsync(id);
-            _context.cities.Remove(city);
+            var city = await _context.Cities.FindAsync(id);
+            _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CityExists(int id)
         {
-            return _context.cities.Any(e => e.Id == id);
+            return _context.Cities.Any(e => e.Id == id);
         }
     }
 }

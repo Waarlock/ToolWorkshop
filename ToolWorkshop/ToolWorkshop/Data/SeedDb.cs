@@ -1,4 +1,7 @@
-﻿using ToolWorkshop.Data.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Enums;
 using ToolWorkshop.Helpers;
 
@@ -20,7 +23,7 @@ namespace ToolWorkshop.Data
 
             await _context.Database.EnsureCreatedAsync();
             await CheckCategoriesAsync();
-            //  await CheckCountriesAsync();
+            await CheckCountriesAsync();
             await CheckRolesAsync();
             await CheckUserAsync("1010", "Juan", "Vasquez", "juanv@yopmail.com", "322 311 4620", "Avenida Siempreviva", UserType.Admin);
             await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", UserType.Admin);
@@ -28,7 +31,7 @@ namespace ToolWorkshop.Data
 
 
         }
-
+        
         private async Task<User> CheckUserAsync(
      string document,
      string firstName,
@@ -68,9 +71,9 @@ namespace ToolWorkshop.Data
 
             private async Task CheckCountriesAsync()
               {
-                  if (!_context.countries.Any())
+                  if (!_context.Countries.Any())
                   {
-                      _context.countries.Add(new Country
+                      _context.Countries.Add(new Country
                       {
                           Name = "Colombia",
                           States = new List<State>()
@@ -99,7 +102,7 @@ namespace ToolWorkshop.Data
                               },
                           }
                       });
-                      _context.countries.Add(new Country
+                      _context.Countries.Add(new Country
                       {
                           Name = "Estados Unidos",
                           States = new List<State>()
@@ -136,10 +139,10 @@ namespace ToolWorkshop.Data
 
         private async Task CheckCategoriesAsync()
         {
-            if (!_context.categories.Any())
+            if (!_context.Categories.Any())
             {
-                _context.categories.Add(new Category { Name = "Caja de Herramientas" });
-                _context.categories.Add(new Category { Name = "Medicion" });
+                _context.Categories.Add(new Category { Name = "Caja de Herramientas" });
+                _context.Categories.Add(new Category { Name = "Medicion" });
 
                 await _context.SaveChangesAsync();
             }

@@ -7,6 +7,52 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="obj\**" />
+    <Content Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Cities\Create.cshtml" />
+    <None Include="Views\Cities\Delete.cshtml" />
+    <None Include="Views\Cities\Details.cshtml" />
+    <None Include="Views\Cities\Edit.cshtml" />
+    <None Include="Views\Cities\Index.cshtml" />
+    <None Include="Views\Countries\AddCity.cshtml" />
+    <None Include="Views\Countries\AddState.cshtml" />
+    <None Include="Views\Countries\Create.cshtml" />
+    <None Include="Views\Countries\Delete.cshtml" />
+    <None Include="Views\Countries\DeleteCity.cshtml" />
+    <None Include="Views\Countries\DeleteState.cshtml" />
+    <None Include="Views\Countries\Details.cshtml" />
+    <None Include="Views\Countries\DetailsCity.cshtml" />
+    <None Include="Views\Countries\DetailsState.cshtml" />
+    <None Include="Views\Countries\Edit.cshtml" />
+    <None Include="Views\Countries\EditCity.cshtml" />
+    <None Include="Views\Countries\EditState.cshtml" />
+    <None Include="Views\Countries\Index.cshtml" />
+    <None Include="Views\Countries\_City.cshtml" />
+    <None Include="Views\Countries\_CityDetails.cshtml" />
+    <None Include="Views\Countries\_Country.cshtml" />
+    <None Include="Views\Countries\_CountryDetails.cshtml" />
+    <None Include="Views\Countries\_State.cshtml" />
+    <None Include="Views\Countries\_StateDetails.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\States\Create.cshtml" />
+    <None Include="Views\States\Delete.cshtml" />
+    <None Include="Views\States\Details.cshtml" />
+    <None Include="Views\States\Edit.cshtml" />
+    <None Include="Views\States\Index.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />

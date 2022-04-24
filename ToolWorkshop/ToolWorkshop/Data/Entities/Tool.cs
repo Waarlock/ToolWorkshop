@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ToolWorkshop.Data.Entities
 {
     public class Tool
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Codigo de Barras")]
@@ -19,8 +21,6 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Descripcion de Herramienta")]
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
-
-        public virtual ICollection<Category_Tool>? Category_Tools { get; set; }
 
         public virtual ICollection<Category>? Categories { get; set; }
 
