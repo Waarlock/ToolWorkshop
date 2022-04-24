@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Enums;
 
@@ -19,19 +17,16 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public string LastName { get; set; }
-        /*
-                [Display(Name = "Login")]
-                [MaxLength(16, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-                [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-                public string UserName { get; set; }
 
-                [Display(Name = "Password")]
-                [MaxLength(512, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-                [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-                public string Password { get; set; }
-        */
-        [Display(Name = "Ciudad")]
-        public City City { get; set; }
+        [Display(Name = "Login")]
+        [MaxLength(16, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+        public string UserName { get; set; }
+
+        [Display(Name = "Password")]
+        [MaxLength(512, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+        public string Password { get; set; }
 
         [Display(Name = "Correo")]
         [MaxLength(64, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]

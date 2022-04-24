@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Models;
@@ -37,7 +35,6 @@ namespace ToolWorkshop.Helpers
                 Name = model.FirstName,
                 LastName = model.LastName,
                 ImageId = model.ImageId,
-                PhoneNumber = model.PhoneNumber,
                 UserName = model.Username,
                 UserType = model.UserType
             };
@@ -77,18 +74,13 @@ namespace ToolWorkshop.Helpers
 
         public async Task<User> GetUserAsync(string email)
         {
-            return await _context.Users
-               .Include(u => u.City)
-                .ThenInclude(c => c.State)
-                .ThenInclude(s => s.Country)
-                .FirstOrDefaultAsync(u => u.Email == email);
+            User? result = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return result;
         }
 
         public async Task<User> GetUserAsync(Guid userId)
         {
-            return await _context.Users
-
-                .FirstOrDefaultAsync(u => u.ImageId == userId);
+            return await _context.Users.FirstOrDefaultAsync(u => u.ImageId == userId);
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)

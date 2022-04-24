@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using ToolWorkshop.Common;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
@@ -80,14 +76,11 @@ namespace ToolWorkshop.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Register()
+        public IActionResult Register()
         {
             AddUserViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
-                Countries = await _combosHelper.GetComboCountriesAsync(),
-                States = await _combosHelper.GetComboStatesAsync(0),
-                Cities = await _combosHelper.GetComboCitiesAsync(0),
                 UserType = UserType.User,
             };
 
@@ -112,18 +105,20 @@ namespace ToolWorkshop.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Este correo ya está siendo usado.");
-                    model.Countries = await _combosHelper.GetComboCountriesAsync();
-                    model.States = await _combosHelper.GetComboStatesAsync(model.CountryId);
-                    model.Cities = await _combosHelper.GetComboCitiesAsync(model.StateId);
                     return View(model);
                 }
 
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
-                {
-                    userid = user.Id,
-                    token = myToken
-                }, protocol: HttpContext.Request.Scheme);
+                string tokenLink = Url.Action(
+                    "ConfirmEmail", 
+                    "Account", 
+                    new
+                    {
+                        userid = user.Id,
+                        token = myToken
+                    }, 
+                    protocol: HttpContext.Request.Scheme
+               );
 
                 Response response = _mailHelper.SendMail(
                     $"{model.FirstName} {model.LastName}",
@@ -141,9 +136,6 @@ namespace ToolWorkshop.Controllers
                 ModelState.AddModelError(string.Empty, response.Message);
             }
 
-            model.Countries = await _combosHelper.GetComboCountriesAsync();
-            model.States = await _combosHelper.GetComboStatesAsync(model.CountryId);
-            model.Cities = await _combosHelper.GetComboCitiesAsync(model.StateId);
             return View(model);
         }
 
@@ -169,32 +161,6 @@ namespace ToolWorkshop.Controllers
             return View();
         }
 
-        public JsonResult GetStates(int countryId)
-        {
-            Country country = _context.Countries
-                .Include(c => c.States)
-                .FirstOrDefault(c => c.Id == countryId);
-            if (country == null)
-            {
-                return null;
-            }
-
-            return Json(country.States.OrderBy(d => d.Name));
-        }
-
-        public JsonResult GetCities(int stateId)
-        {
-            State state = _context.States
-                .Include(s => s.Cities)
-                .FirstOrDefault(s => s.Id == stateId);
-            if (state == null)
-            {
-                return null;
-            }
-
-            return Json(state.Cities.OrderBy(c => c.Name));
-        }
-
         public async Task<IActionResult> ChangeUser()
         {
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
@@ -208,9 +174,7 @@ namespace ToolWorkshop.Controllers
             {
                 FirstName = user.Name,
                 LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
                 ImageId = user.ImageId,
-                Countries = await _combosHelper.GetComboCountriesAsync(),
                 Id = user.Id.ToString(),
                 Document = user.Document
             };
@@ -235,7 +199,6 @@ namespace ToolWorkshop.Controllers
 
                 user.Name = model.FirstName;
                 user.LastName = model.LastName;
-                user.PhoneNumber = model.PhoneNumber;
                 user.ImageId = imageId;
                 user.Document = model.Document;
 
@@ -243,9 +206,6 @@ namespace ToolWorkshop.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            model.Countries = await _combosHelper.GetComboCountriesAsync();
-            model.States = await _combosHelper.GetComboStatesAsync(model.CountryId);
-            model.Cities = await _combosHelper.GetComboCitiesAsync(model.StateId);
             return View(model);
         }
 
@@ -309,6 +269,7 @@ namespace ToolWorkshop.Controllers
                     "ResetPassword",
                     "Account",
                     new { token = myToken }, protocol: HttpContext.Request.Scheme);
+
                 _mailHelper.SendMail(
                     $"{user.FullName}",
                     model.Email,

@@ -53,7 +53,6 @@ namespace ToolWorkshop.Data
                     Email = email,
                     UserName = email,
                     Document = document,
-                    City = _context.Cities.FirstOrDefault(),
                     UserType = userType,
                 };
 

@@ -27,6 +27,7 @@ namespace ToolWorkshop.Controllers
         }
 
         // GET: Movements/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,8 +35,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var movement = await _context.Movements
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movement = await _context.Movements.FirstOrDefaultAsync(m => m.Id == id);
             if (movement == null)
             {
                 return NotFound();
