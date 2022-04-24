@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Enums;
 
 namespace ToolWorkshop.Data.Entities
@@ -49,6 +50,7 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
 
+        //TODO: Pending to put the correct paths
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7057/images/noimage.png"
