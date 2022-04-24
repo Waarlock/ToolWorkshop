@@ -1,4 +1,4 @@
-﻿@model ToolWorkshop.Data.Entities.Country
+﻿@model ToolWorkshop.Data.Entities.Planogram
 
 @{
     ViewData["Title"] = "Details";
@@ -7,9 +7,15 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Country</h4>
+    <h4>Planogram</h4>
     <hr />
     <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>

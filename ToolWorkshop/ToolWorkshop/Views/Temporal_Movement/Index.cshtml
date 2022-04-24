@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ToolWorkshop.Data.Entities.Country>
+﻿@model IEnumerable<ToolWorkshop.Data.Entities.Temporal_Movement>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Start_DateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.End_DateTime)
             </th>
             <th></th>
         </tr>
@@ -22,7 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.Start_DateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.End_DateTime)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

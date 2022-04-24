@@ -11,22 +11,22 @@ using ToolWorkshop.Data.Entities;
 
 namespace ToolWorkshop.Controllers
 {
-    public class CountriesController : Controller
+    public class PlanogramsController : Controller
     {
         private readonly DataContext _context;
 
-        public CountriesController(DataContext context)
+        public PlanogramsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Countries
+        // GET: Planograms
         public async Task<IActionResult> Index()
         {
-            return View(await _context.countries.ToListAsync());
+            return View(await _context.planograms.ToListAsync());
         }
 
-        // GET: Countries/Details/5
+        // GET: Planograms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +34,39 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var planogram = await _context.planograms
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (planogram == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(planogram);
         }
 
-        // GET: Countries/Create
+        // GET: Planograms/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Countries/Create
+        // POST: Planograms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("Id,Type,Name")] Planogram planogram)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
+                _context.Add(planogram);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(planogram);
         }
 
-        // GET: Countries/Edit/5
+        // GET: Planograms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries.FindAsync(id);
-            if (country == null)
+            var planogram = await _context.planograms.FindAsync(id);
+            if (planogram == null)
             {
                 return NotFound();
             }
-            return View(country);
+            return View(planogram);
         }
 
-        // POST: Countries/Edit/5
+        // POST: Planograms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Name")] Planogram planogram)
         {
-            if (id != country.Id)
+            if (id != planogram.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace ToolWorkshop.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    _context.Update(planogram);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.Id))
+                    if (!PlanogramExists(planogram.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace ToolWorkshop.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(planogram);
         }
 
-        // GET: Countries/Delete/5
+        // GET: Planograms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,30 +125,30 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var planogram = await _context.planograms
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (planogram == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(planogram);
         }
 
-        // POST: Countries/Delete/5
+        // POST: Planograms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var country = await _context.countries.FindAsync(id);
-            _context.countries.Remove(country);
+            var planogram = await _context.planograms.FindAsync(id);
+            _context.planograms.Remove(planogram);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(int id)
+        private bool PlanogramExists(int id)
         {
-            return _context.countries.Any(e => e.Id == id);
+            return _context.planograms.Any(e => e.Id == id);
         }
     }
 }

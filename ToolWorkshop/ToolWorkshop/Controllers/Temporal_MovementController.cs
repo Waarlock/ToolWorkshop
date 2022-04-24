@@ -11,22 +11,22 @@ using ToolWorkshop.Data.Entities;
 
 namespace ToolWorkshop.Controllers
 {
-    public class CountriesController : Controller
+    public class Temporal_MovementController : Controller
     {
         private readonly DataContext _context;
 
-        public CountriesController(DataContext context)
+        public Temporal_MovementController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Countries
+        // GET: Temporal_Movement
         public async Task<IActionResult> Index()
         {
-            return View(await _context.countries.ToListAsync());
+            return View(await _context.temporal_movements.ToListAsync());
         }
 
-        // GET: Countries/Details/5
+        // GET: Temporal_Movement/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +34,39 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var temporal_Movement = await _context.temporal_movements
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (temporal_Movement == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(temporal_Movement);
         }
 
-        // GET: Countries/Create
+        // GET: Temporal_Movement/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Countries/Create
+        // POST: Temporal_Movement/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("Id,Start_DateTime,End_DateTime")] Temporal_Movement temporal_Movement)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
+                _context.Add(temporal_Movement);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(temporal_Movement);
         }
 
-        // GET: Countries/Edit/5
+        // GET: Temporal_Movement/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries.FindAsync(id);
-            if (country == null)
+            var temporal_Movement = await _context.temporal_movements.FindAsync(id);
+            if (temporal_Movement == null)
             {
                 return NotFound();
             }
-            return View(country);
+            return View(temporal_Movement);
         }
 
-        // POST: Countries/Edit/5
+        // POST: Temporal_Movement/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Start_DateTime,End_DateTime")] Temporal_Movement temporal_Movement)
         {
-            if (id != country.Id)
+            if (id != temporal_Movement.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace ToolWorkshop.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    _context.Update(temporal_Movement);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.Id))
+                    if (!Temporal_MovementExists(temporal_Movement.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace ToolWorkshop.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(temporal_Movement);
         }
 
-        // GET: Countries/Delete/5
+        // GET: Temporal_Movement/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,30 +125,30 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var temporal_Movement = await _context.temporal_movements
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (temporal_Movement == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(temporal_Movement);
         }
 
-        // POST: Countries/Delete/5
+        // POST: Temporal_Movement/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var country = await _context.countries.FindAsync(id);
-            _context.countries.Remove(country);
+            var temporal_Movement = await _context.temporal_movements.FindAsync(id);
+            _context.temporal_movements.Remove(temporal_Movement);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(int id)
+        private bool Temporal_MovementExists(int id)
         {
-            return _context.countries.Any(e => e.Id == id);
+            return _context.temporal_movements.Any(e => e.Id == id);
         }
     }
 }

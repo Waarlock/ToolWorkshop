@@ -11,22 +11,22 @@ using ToolWorkshop.Data.Entities;
 
 namespace ToolWorkshop.Controllers
 {
-    public class CountriesController : Controller
+    public class Movement_DetailController : Controller
     {
         private readonly DataContext _context;
 
-        public CountriesController(DataContext context)
+        public Movement_DetailController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Countries
+        // GET: Movement_Detail
         public async Task<IActionResult> Index()
         {
-            return View(await _context.countries.ToListAsync());
+            return View(await _context.movement_Details.ToListAsync());
         }
 
-        // GET: Countries/Details/5
+        // GET: Movement_Detail/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +34,39 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var movement_Detail = await _context.movement_Details
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (movement_Detail == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(movement_Detail);
         }
 
-        // GET: Countries/Create
+        // GET: Movement_Detail/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Countries/Create
+        // POST: Movement_Detail/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("Id,Remarks,Retun_Remarks")] Movement_Detail movement_Detail)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
+                _context.Add(movement_Detail);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(movement_Detail);
         }
 
-        // GET: Countries/Edit/5
+        // GET: Movement_Detail/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries.FindAsync(id);
-            if (country == null)
+            var movement_Detail = await _context.movement_Details.FindAsync(id);
+            if (movement_Detail == null)
             {
                 return NotFound();
             }
-            return View(country);
+            return View(movement_Detail);
         }
 
-        // POST: Countries/Edit/5
+        // POST: Movement_Detail/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Remarks,Retun_Remarks")] Movement_Detail movement_Detail)
         {
-            if (id != country.Id)
+            if (id != movement_Detail.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace ToolWorkshop.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    _context.Update(movement_Detail);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.Id))
+                    if (!Movement_DetailExists(movement_Detail.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace ToolWorkshop.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(movement_Detail);
         }
 
-        // GET: Countries/Delete/5
+        // GET: Movement_Detail/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,30 +125,30 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var movement_Detail = await _context.movement_Details
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (movement_Detail == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(movement_Detail);
         }
 
-        // POST: Countries/Delete/5
+        // POST: Movement_Detail/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var country = await _context.countries.FindAsync(id);
-            _context.countries.Remove(country);
+            var movement_Detail = await _context.movement_Details.FindAsync(id);
+            _context.movement_Details.Remove(movement_Detail);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(int id)
+        private bool Movement_DetailExists(int id)
         {
-            return _context.countries.Any(e => e.Id == id);
+            return _context.movement_Details.Any(e => e.Id == id);
         }
     }
 }

@@ -11,22 +11,22 @@ using ToolWorkshop.Data.Entities;
 
 namespace ToolWorkshop.Controllers
 {
-    public class CountriesController : Controller
+    public class ToolsController : Controller
     {
         private readonly DataContext _context;
 
-        public CountriesController(DataContext context)
+        public ToolsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Countries
+        // GET: Tools
         public async Task<IActionResult> Index()
         {
-            return View(await _context.countries.ToListAsync());
+            return View(await _context.tools.ToListAsync());
         }
 
-        // GET: Countries/Details/5
+        // GET: Tools/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +34,39 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var tool = await _context.tools
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (tool == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(tool);
         }
 
-        // GET: Countries/Create
+        // GET: Tools/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Countries/Create
+        // POST: Tools/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("Id,EAN,Name,Description")] Tool tool)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
+                _context.Add(tool);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(tool);
         }
 
-        // GET: Countries/Edit/5
+        // GET: Tools/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries.FindAsync(id);
-            if (country == null)
+            var tool = await _context.tools.FindAsync(id);
+            if (tool == null)
             {
                 return NotFound();
             }
-            return View(country);
+            return View(tool);
         }
 
-        // POST: Countries/Edit/5
+        // POST: Tools/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EAN,Name,Description")] Tool tool)
         {
-            if (id != country.Id)
+            if (id != tool.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace ToolWorkshop.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    _context.Update(tool);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.Id))
+                    if (!ToolExists(tool.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace ToolWorkshop.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(tool);
         }
 
-        // GET: Countries/Delete/5
+        // GET: Tools/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,30 +125,30 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var country = await _context.countries
+            var tool = await _context.tools
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (tool == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(tool);
         }
 
-        // POST: Countries/Delete/5
+        // POST: Tools/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var country = await _context.countries.FindAsync(id);
-            _context.countries.Remove(country);
+            var tool = await _context.tools.FindAsync(id);
+            _context.tools.Remove(tool);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(int id)
+        private bool ToolExists(int id)
         {
-            return _context.countries.Any(e => e.Id == id);
+            return _context.tools.Any(e => e.Id == id);
         }
     }
 }
