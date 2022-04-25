@@ -25,18 +25,22 @@ namespace ToolWorkshop.Helpers
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
-            return await _userManager.CreateAsync(user, password);
+            IdentityResult result = await _userManager.CreateAsync(user, password);
+            return result;
         }
 
         public async Task<User> AddUserAsync(AddUserViewModel model)
         {
             User user = new()
             {
+                Address = model.Address,
                 Document = model.Document,
                 Email = model.Username,
-                Name = model.FirstName,
+                FirstName = model.FirstName,
                 LastName = model.LastName,
                 ImageId = model.ImageId,
+                PhoneNumber = model.PhoneNumber,
+                City = new City(),
                 UserName = model.Username,
                 UserType = model.UserType
             };
@@ -76,13 +80,20 @@ namespace ToolWorkshop.Helpers
 
         public async Task<User> GetUserAsync(string email)
         {
-            User? result = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            return result;
+            return await _context.Users
+                .Include(u => u.City)
+                .ThenInclude(c => c.State)
+                .ThenInclude(s => s.Country)
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> GetUserAsync(Guid userId)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.ImageId == userId);
+            return await _context.Users
+                .Include(u => u.City)
+                .ThenInclude(c => c.State)
+                .ThenInclude(s => s.Country)
+                .FirstOrDefaultAsync(u => u.Id.ToString() == userId.ToString());
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
@@ -92,7 +103,7 @@ namespace ToolWorkshop.Helpers
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
         {
-            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, true);
         }
 
         public async Task LogoutAsync()

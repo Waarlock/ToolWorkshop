@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Data.Entities;
+using ToolWorkshop.Utils;
 
 namespace ToolWorkshop.Models
 {
@@ -21,14 +22,14 @@ namespace ToolWorkshop.Models
         public Tool Tool { get; set; }
 
 
-        /*
+        
         [Display(Name = "Foto")]
         public Guid ToolImageId { get; set; }
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ToolImageId == Guid.Empty
             ? $"https://localhost:7057/images/noimage.png"
-            : $"https://shoppingzulu.blob.core.windows.net/users/{ToolImageId}";*/
+            : $"https://{Constants.ImageRepositoryRemote}/users/{ToolImageId}";
 
         public IEnumerable<SelectListItem>? CatalogList { get; set; }
 

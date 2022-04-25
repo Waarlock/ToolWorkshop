@@ -12,7 +12,7 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220424181554_InitialDB")]
+    [Migration("20220425015504_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -434,6 +434,11 @@ namespace ToolWorkshop.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
@@ -457,6 +462,11 @@ namespace ToolWorkshop.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<Guid>("ImageId")
                         .HasColumnType("uniqueidentifier");
 
@@ -470,11 +480,6 @@ namespace ToolWorkshop.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -674,7 +679,7 @@ namespace ToolWorkshop.Migrations
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Planogram", b =>
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.Warehouse", "Warehouse")
-                        .WithMany()
+                        .WithMany("Planograms")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -764,6 +769,11 @@ namespace ToolWorkshop.Migrations
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Tool", b =>
                 {
                     b.Navigation("Catalogs");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.Warehouse", b =>
+                {
+                    b.Navigation("Planograms");
                 });
 #pragma warning restore 612, 618
         }

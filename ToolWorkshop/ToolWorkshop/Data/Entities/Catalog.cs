@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ToolWorkshop.Utils;
 
 namespace ToolWorkshop.Data.Entities
 {
@@ -31,7 +32,7 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Foto")]
         public string ImageFullPath => ToolImageId == Guid.Empty
             ? $"https://localhost:7057/images/noimage.png"
-            : $"https://shoppingzulu.blob.core.windows.net/users/{ToolImageId}";
+            : $"{Constants.ImageRepositoryRemote}/users/{ToolImageId}";
 
         public virtual ICollection<Movement_Detail>? MovementDetails { get; set; }
 

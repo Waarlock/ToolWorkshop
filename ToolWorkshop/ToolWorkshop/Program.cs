@@ -1,15 +1,10 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(o =>
@@ -17,17 +12,22 @@ builder.Services.AddDbContext<DataContext>(o =>
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-//TODO: make strongest password
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
-    cfg.User.RequireUniqueEmail = true;
+    cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+    //cfg.SignIn.RequireConfirmedEmail = true;
+    //cfg.User.RequireUniqueEmail = true;
     cfg.Password.RequireDigit = false;
     cfg.Password.RequiredUniqueChars = 0;
     cfg.Password.RequireLowercase = false;
     cfg.Password.RequireNonAlphanumeric = false;
     cfg.Password.RequireUppercase = false;
-    //cfg.Password.RequiredLength = 6;
-}).AddEntityFrameworkStores<DataContext>();
+    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
+    cfg.Lockout.MaxFailedAccessAttempts = 3;
+    cfg.Lockout.AllowedForNewUsers = true;
+})
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<DataContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -43,7 +43,6 @@ builder.Services.AddScoped<IBlobHelper, BlobHelper>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
 
 var app = builder.Build();
-
 SeedData(app);
 
 void SeedData(WebApplication app)

@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Enums;
 using ToolWorkshop.Helpers;
@@ -15,10 +11,10 @@ namespace ToolWorkshop.Data
         private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;
 
-        public SeedDb(DataContext context, IUserHelper userhelper, IBlobHelper blobHelper)
+        public SeedDb(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper)
         {
             _context = context;
-            _userHelper = userhelper;
+            _userHelper = userHelper;
             _blobHelper = blobHelper;
         }
 
@@ -27,64 +23,69 @@ namespace ToolWorkshop.Data
 
             await _context.Database.EnsureCreatedAsync();
             //_context.Database.Migrate();
-            await CheckCategoriesAsync();
             await CheckCountriesAsync();
+            await CheckCategoriesAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("1010", "Juan", "Vasquez", "juanv@yopmail.com", "322 311 4620", "Avenida Siempreviva", UserType.Admin);
-            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", UserType.Admin);
-            await CheckUserAsync("2010", "Pedro", "Galindo", "pedrog@yopmail.com", "322 311 4620", "Privet Drive 4", UserType.User);
+            await CheckWarehousePlanogramAsync();
+            await CheckUserAsync("1010", "Juan", "Vasquez", "juanv@yopmail.com", "322 311 4620", "Avenida Siempreviva", "Brad.jpg", UserType.Admin);
+            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", "bob.jpg", UserType.Admin);
+            await CheckUserAsync("2010", "Pedro", "Galindo", "pedrog@yopmail.com", "322 311 4620", "Privet Drive 4", "LedysBedoya.jpeg", UserType.User);
 
 
         }
 
         private async Task<User> CheckUserAsync(
-         string document, 
-         string firstName,
-         string lastName,
-         string email,
-         string phone,
-         string address,
-         UserType userType
-        )
+            string document,
+            string firstName,
+            string lastName,
+            string email,
+            string phone,
+            string address,
+            string image,
+            UserType userType)
         {
             User user = await _userHelper.GetUserAsync(email);
             if (user == null)
             {
+                Guid imageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\users\\{image}", "users");
                 user = new User
                 {
-                    Name = firstName,
+                    FirstName = firstName,
                     LastName = lastName,
                     Email = email,
                     UserName = email,
-                    Document = document,
-                    UserType = userType,
                     PhoneNumber = phone,
-                    City = new()
+                    Address = address,
+                    Document = document,
+                    City = _context.Cities.FirstOrDefault(),
+                    UserType = userType,
+                    ImageId = imageId
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");
                 await _userHelper.AddUserToRoleAsync(user, userType.ToString());
+
+                string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
 
             return user;
         }
 
-
         private async Task CheckRolesAsync()
         {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
-
         }
 
-            private async Task CheckCountriesAsync()
-              {
-                  if (!_context.Countries.Any())
-                  {
-                      _context.Countries.Add(new Country
-                      {
-                          Name = "Colombia",
-                          States = new List<State>()
+        private async Task CheckCountriesAsync()
+        {
+            if (!_context.Countries.Any())
+            {
+                _context.Countries.Add(new Country
+                {
+                    Name = "Colombia",
+                    States = new List<State>()
                           {
                               new State()
                               {
@@ -109,11 +110,11 @@ namespace ToolWorkshop.Data
                                   }
                               },
                           }
-                      });
-                      _context.Countries.Add(new Country
-                      {
-                          Name = "Estados Unidos",
-                          States = new List<State>()
+                });
+                _context.Countries.Add(new Country
+                {
+                    Name = "Estados Unidos",
+                    States = new List<State>()
                           {
                               new State()
                               {
@@ -138,27 +139,69 @@ namespace ToolWorkshop.Data
                                   }
                               },
                           }
-                      });
-                  }
+                });
+            }
 
-                  await _context.SaveChangesAsync();
-              }
+            await _context.SaveChangesAsync();
+        }
 
-        /*
-         *Categories = new List<Category>()
+        private async Task CheckWarehousePlanogramAsync()
+        {
+            City Medellin = await _context.Cities.Include(c => c.State).ThenInclude(s => s.Country).FirstOrDefaultAsync(c => c.Name == "Medellín" && c.State.Country.Name == "Colombia");
+            City Tampa = await _context.Cities.Include(c => c.State).ThenInclude(s => s.Country).FirstOrDefaultAsync(c => c.Name == "Tampa" && c.State.Country.Name == "Estados Unidos");
+
+            if (!_context.Warehouses.Any())
+            {
+                _context.Warehouses.Add(
+                    new Warehouse()
                     {
-                        new Category()
+                        City = Medellin,
+                        Name = "Bodega Ciudad Del Rio",
+                        Description = "Bodega de suministros",
+                        Planograms = new List<Planogram>()
                         {
-                            Name=
+                            new Planogram()
+                            {
+                                Name = "Estanteria A2",
+                                Type = "Estanteria"
+                            },
+                            new Planogram()
+                            {
+                                Name = "Estanteria B4",
+                                Type = "Estanteria"
+                            }
                         }
-                    }
-         */
+                    });
 
+                _context.Warehouses.Add(
+                    new Warehouse()
+                    {
+                        City = Tampa,
+                        Name = "Bodega Palm Harbor",
+                        Description = "Bodega de repuestos",
+                        Planograms = new List<Planogram>()
+                        {
+                            new Planogram()
+                            {
+                                Name = "Estanteria Z3",
+                                Type = "Estanteria"
+                            },
+                            new Planogram()
+                            {
+                                Name = "Estanteria H7",
+                                Type = "Estanteria"
+                            }
+                        }
+                    });
+            }
+            await _context.SaveChangesAsync();
+        }
         private async Task CheckCategoriesAsync()
         {
             if (!_context.Categories.Any())
             {
-                _context.Categories.Add(new Category { 
+                _context.Categories.Add(new Category
+                {
                     Name = "Herramientas Mecánicas",
                     Tools = new Tool[] {
                        new Tool {
@@ -175,7 +218,8 @@ namespace ToolWorkshop.Data
                     }
                 });
 
-                _context.Categories.Add(new Category { 
+                _context.Categories.Add(new Category
+                {
                     Name = "Herramienta de montaje:",
                     Tools = new Tool[] {
                         new Tool
@@ -188,7 +232,8 @@ namespace ToolWorkshop.Data
                 });
 
                 _context.Categories.Add(new Category { Name = "Medicion" });
-                _context.Categories.Add(new Category { 
+                _context.Categories.Add(new Category
+                {
                     Name = "Caja de Herramientas",
                     Tools = new Tool[]
                     {

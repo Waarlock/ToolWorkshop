@@ -19,5 +19,7 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public City City { get; set; }
 
+        public ICollection<Planogram>? Planograms { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using ToolWorkshop.Enums;
+using ToolWorkshop.Utils;
 
 namespace ToolWorkshop.Data.Entities
 {
@@ -11,7 +12,7 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Nombres")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
         [Display(Name = "Apellidos")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -20,6 +21,11 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Ciudad")]
         public City City { get; set; }
+
+        [Display(Name = "Dirección")]
+        [MaxLength(200, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Address { get; set; }
 
         [Display(Name = "Correo")]
         [MaxLength(64, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -43,11 +49,10 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
 
-        //TODO: Pending to put the correct paths
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7005/images/noimage.png"
-            : $"https://toolorkshop.blob.core.windows.net/users/{ImageId}";
+            : $"{Constants.ImageRepositoryRemote}/users/{ImageId}";
 
         [Display(Name = "Tipo de Usuario")]
         public UserType UserType { get; set; }
@@ -58,9 +63,9 @@ namespace ToolWorkshop.Data.Entities
         public ICollection<Temporal_Movement>? Temporal_Movements;
 
         [Display(Name = "Usuario")]
-        public string FullName => $"{Name} {LastName}";
+        public string FullName => $"{FirstName} {LastName}";
 
         [Display(Name = "Usuario")]
-        public string FullNameWithDocument => $"{Name} {LastName} - {Document}";
+        public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
     }
 }
