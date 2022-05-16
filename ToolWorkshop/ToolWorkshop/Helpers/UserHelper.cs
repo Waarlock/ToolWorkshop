@@ -25,8 +25,7 @@ namespace ToolWorkshop.Helpers
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
-            IdentityResult result = await _userManager.CreateAsync(user, password);
-            return result;
+            return await _userManager.CreateAsync(user, password);
         }
 
         public async Task<User> AddUserAsync(AddUserViewModel model)
@@ -40,7 +39,7 @@ namespace ToolWorkshop.Helpers
                 LastName = model.LastName,
                 ImageId = model.ImageId,
                 PhoneNumber = model.PhoneNumber,
-                City = new City(),
+                City = await _context.Cities.FindAsync(model.CityId),
                 UserName = model.Username,
                 UserType = model.UserType
             };
@@ -93,7 +92,7 @@ namespace ToolWorkshop.Helpers
                 .Include(u => u.City)
                 .ThenInclude(c => c.State)
                 .ThenInclude(s => s.Country)
-                .FirstOrDefaultAsync(u => u.Id.ToString() == userId.ToString());
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)

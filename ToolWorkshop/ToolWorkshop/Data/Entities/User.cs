@@ -7,7 +7,7 @@ namespace ToolWorkshop.Data.Entities
 {
     public class User : IdentityUser
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [Display(Name = "Nombres")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -52,7 +52,8 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7005/images/noimage.png"
-            : $"{Constants.ImageRepositoryRemote}/users/{ImageId}";
+            : $"https://toolorkshop.blob.core.windows.net/users/{ImageId}";
+        // : $"{Constants.ImageRepositoryRemote}/users/{ImageId}";
 
         [Display(Name = "Tipo de Usuario")]
         public UserType UserType { get; set; }
