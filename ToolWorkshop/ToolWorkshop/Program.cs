@@ -15,14 +15,14 @@ builder.Services.AddDbContext<DataContext>(o =>
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
     cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
-    //cfg.SignIn.RequireConfirmedEmail = true;
-    //cfg.User.RequireUniqueEmail = true;
+    cfg.SignIn.RequireConfirmedEmail = true;
+   //TODO: cfg.User.RequireUniqueEmail = true;
     cfg.Password.RequireDigit = false;
     cfg.Password.RequiredUniqueChars = 0;
     cfg.Password.RequireLowercase = false;
     cfg.Password.RequireNonAlphanumeric = false;
     cfg.Password.RequireUppercase = false;
-    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
+    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
     cfg.Lockout.MaxFailedAccessAttempts = 3;
     cfg.Lockout.AllowedForNewUsers = true;
 })

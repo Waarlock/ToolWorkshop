@@ -7,6 +7,13 @@
 <h2>Registrar</h2>
 
 <h4>Usuario</h4>
+
+<div class="text-success">
+    <h3>
+        @ViewBag.Message
+    </h3>
+</div>
+
 <hr />
 <div class="row">
     <div class="col-md-12">
@@ -55,9 +62,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#CountryId").change(function () {
-                debugger;
                 $("#StateId").empty();
-                $("#StateId").append('<option value="0">[Selecciona un departamento/estado...]</option>');
+                $("#StateId").append('<option value="0">[Selecciona un Departamento / Estado...]</option>');
                 $("#CityId").empty();
                 $("#CityId").append('<option value="0">[Selecciona una ciudad...]</option>');
                 $.ajax({
@@ -78,7 +84,6 @@
                 });
                 return false;
             })
-
             $("#StateId").change(function () {
                 $("#CityId").empty();
                 $("#CityId").append('<option value="0">[Selecciona una ciudad...]</option>');

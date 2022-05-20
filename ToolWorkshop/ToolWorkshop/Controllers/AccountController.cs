@@ -22,7 +22,8 @@ namespace ToolWorkshop.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
 
-        public AccountController(IUserHelper userHelper, DataContext context, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public AccountController(IUserHelper userHelper, DataContext context, ICombosHelper combosHelper,
+            IBlobHelper blobHelper, IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _context = context;
