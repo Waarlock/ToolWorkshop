@@ -19,7 +19,8 @@ namespace ToolWorkshop.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IMailHelper _mailHelper;
 
-        public UsersController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, ICombosHelper combosHelper, IMailHelper mailHelper)
+        public UsersController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper,
+            ICombosHelper combosHelper, IMailHelper mailHelper)
         {
             _context = context;
             _userHelper = userHelper;
@@ -86,7 +87,7 @@ namespace ToolWorkshop.Controllers
                     $"{model.FirstName} {model.LastName}",
                     model.Username,
                     "Shopping - Confirmación de Email",
-                    $"<h1>Shopping - Confirmación de Email</h1>" +
+                    $"<h1>ToolWorkshop - Confirmación de Email</h1>" +
                         $"Para habilitar el usuario por favor hacer click en el siguiente link:, " +
                         $"<hr/><br/><p><a href = \"{tokenLink}\">Confirmar Email</a></p>");
                 if (response.IsSuccess)
