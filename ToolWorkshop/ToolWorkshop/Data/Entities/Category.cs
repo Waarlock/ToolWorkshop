@@ -12,6 +12,7 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public string Name { get; set; }
 
-        public virtual ICollection<Tool>? Tools { get; set; }
+        public ICollection<ToolCategory> ToolCategories { get; set; }
+        //public virtual ICollection<Tool>? Tools { get; set; }
     }
 }

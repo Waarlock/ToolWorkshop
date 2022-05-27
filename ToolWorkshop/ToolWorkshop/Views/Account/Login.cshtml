@@ -7,9 +7,9 @@
 
 <div class="row">
     <div class="col-md-4 offset-4">
-        <div class="card bg-primary mb-3" style="width: 450px; height: 450px">
+        <div class="card bg-warning mb-3" style="width: 450px; height: 450px">
             <h5 class="card-header text-center text-white"><i class="fa-solid fa-envelope text-navy text-white"></i> Iniciar Sesión</h5>
-            <div class="card-body bg-warning">
+            <div class="card-body bg-secondary">
                 <h3>Iniciar Sesión</h3>
                 <form asp-action="Login">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
@@ -36,8 +36,8 @@
                     </div>
                 </form>
             </div>
-            <div class="card-footer bg-secondary text-center">
-                ¿Has olvidado tu contraseña?<a asp-action="RecoverPassword"> Recuperala</a>
+            <div class="card-footer bg-secondary text-white">
+                ¿Has olvidado tu contraseña?<a asp-action="RecoverPassword" class="btn btn-secondary text-white">  Recuperala </a>
             </div>
         </div>
     </div>

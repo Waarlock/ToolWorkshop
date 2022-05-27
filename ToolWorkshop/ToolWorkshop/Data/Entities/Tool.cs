@@ -22,8 +22,31 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
 
-        public virtual ICollection<Category>? Categories { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}")]
+        [Display(Name = "Inventario")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public float Stock { get; set; }
 
-        public virtual ICollection<Catalog>? Catalogs { get; set; }
+        public ICollection<ToolCategory> ToolCategories { get; set; }
+
+        [Display(Name = "Categorías")]
+        public int CategoriesNumber => ToolCategories == null ? 0 : ToolCategories.Count;
+
+        public ICollection<ToolImage> ToolImages { get; set; }
+
+        [Display(Name = "Fotos")]
+        public int ImagesNumber => ToolImages == null ? 0 : ToolImages.Count;
+
+        //TODO: Pending to change to the correct path
+        [Display(Name = "Foto")]
+        public string ImageFullPath => ToolImages == null || ToolImages.Count == 0
+            ? $"https://localhost:7005/images/noimage.png"
+            : ToolImages.FirstOrDefault().ImageFullPath;
     }
-}
+
+      // public virtual ICollection<Category>? Categories { get; set; }
+
+     // public virtual ICollection<Catalog>? Catalogs { get; set; }
+    }
+
+

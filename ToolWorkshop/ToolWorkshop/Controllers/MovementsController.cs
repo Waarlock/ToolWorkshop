@@ -39,7 +39,7 @@ namespace ToolWorkshop.Controllers
                 .Include(m => m.Details)
                 .ThenInclude(d => d.Catalog)
                 .ThenInclude(c => c.Tool)
-                .ThenInclude(t => t.Categories)
+    //TODO:     .ThenInclude(t => t.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movement == null)
             {

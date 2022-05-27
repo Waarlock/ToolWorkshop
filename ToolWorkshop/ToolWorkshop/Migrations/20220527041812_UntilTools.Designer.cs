@@ -12,8 +12,8 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220425015504_InitialDB")]
-    partial class InitialDB
+    [Migration("20220527041812_UntilTools")]
+    partial class UntilTools
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,21 +23,6 @@ namespace ToolWorkshop.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("CategoryTool", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ToolsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoriesId", "ToolsId");
-
-                    b.HasIndex("ToolsId");
-
-                    b.ToTable("CategoryTool");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -235,12 +220,16 @@ namespace ToolWorkshop.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("StateId")
+                    b.Property<int?>("StateId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StateId");
+
+                    b.HasIndex("Name", "StateId")
+                        .IsUnique()
+                        .HasFilter("[StateId] IS NOT NULL");
 
                     b.ToTable("Cities");
                 });
@@ -300,7 +289,6 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Remarks")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -358,7 +346,7 @@ namespace ToolWorkshop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CountryId")
+                    b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -369,6 +357,10 @@ namespace ToolWorkshop.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("Name", "CountryId")
+                        .IsUnique()
+                        .HasFilter("[CountryId] IS NOT NULL");
 
                     b.ToTable("States");
                 });
@@ -407,7 +399,6 @@ namespace ToolWorkshop.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
@@ -421,9 +412,61 @@ namespace ToolWorkshop.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<float>("Stock")
+                        .HasColumnType("real");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Tools");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ToolId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ToolId", "CategoryId")
+                        .IsUnique()
+                        .HasFilter("[ToolId] IS NOT NULL AND [CategoryId] IS NOT NULL");
+
+                    b.ToTable("ToolsCategories");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("ToolId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ToolId");
+
+                    b.ToTable("ToolsImages");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>
@@ -439,7 +482,7 @@ namespace ToolWorkshop.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -541,7 +584,6 @@ namespace ToolWorkshop.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
@@ -555,21 +597,6 @@ namespace ToolWorkshop.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Warehouses");
-                });
-
-            modelBuilder.Entity("CategoryTool", b =>
-                {
-                    b.HasOne("ToolWorkshop.Data.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ToolWorkshop.Data.Entities.Tool", null)
-                        .WithMany()
-                        .HasForeignKey("ToolsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -632,7 +659,7 @@ namespace ToolWorkshop.Migrations
                         .IsRequired();
 
                     b.HasOne("ToolWorkshop.Data.Entities.Tool", "Tool")
-                        .WithMany("Catalogs")
+                        .WithMany()
                         .HasForeignKey("ToolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -646,9 +673,7 @@ namespace ToolWorkshop.Migrations
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.State", "State")
                         .WithMany("Cities")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StateId");
 
                     b.Navigation("State");
                 });
@@ -691,9 +716,7 @@ namespace ToolWorkshop.Migrations
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.Country", "Country")
                         .WithMany("States")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountryId");
 
                     b.Navigation("Country");
                 });
@@ -709,13 +732,35 @@ namespace ToolWorkshop.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolCategory", b =>
+                {
+                    b.HasOne("ToolWorkshop.Data.Entities.Category", "Category")
+                        .WithMany("ToolCategories")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("ToolWorkshop.Data.Entities.Tool", "Tool")
+                        .WithMany("ToolCategories")
+                        .HasForeignKey("ToolId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Tool");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolImage", b =>
+                {
+                    b.HasOne("ToolWorkshop.Data.Entities.Tool", "Tool")
+                        .WithMany("ToolImages")
+                        .HasForeignKey("ToolId");
+
+                    b.Navigation("Tool");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.City", "City")
                         .WithMany("Users")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
                     b.Navigation("City");
                 });
@@ -734,6 +779,11 @@ namespace ToolWorkshop.Migrations
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Catalog", b =>
                 {
                     b.Navigation("MovementDetails");
+                });
+
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.Category", b =>
+                {
+                    b.Navigation("ToolCategories");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.City", b =>
@@ -768,7 +818,9 @@ namespace ToolWorkshop.Migrations
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Tool", b =>
                 {
-                    b.Navigation("Catalogs");
+                    b.Navigation("ToolCategories");
+
+                    b.Navigation("ToolImages");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Warehouse", b =>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ToolWorkshop.Migrations
 {
-    public partial class InitialDB : Migration
+    public partial class UntilTools : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,7 +71,8 @@ namespace ToolWorkshop.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EAN = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Stock = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,7 +107,7 @@ namespace ToolWorkshop.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
+                    CountryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -115,32 +116,50 @@ namespace ToolWorkshop.Migrations
                         name: "FK_States_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryTool",
+                name: "ToolsCategories",
                 columns: table => new
                 {
-                    CategoriesId = table.Column<int>(type: "int", nullable: false),
-                    ToolsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ToolId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryTool", x => new { x.CategoriesId, x.ToolsId });
+                    table.PrimaryKey("PK_ToolsCategories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CategoryTool_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
+                        name: "FK_ToolsCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CategoryTool_Tools_ToolsId",
-                        column: x => x.ToolsId,
+                        name: "FK_ToolsCategories_Tools_ToolId",
+                        column: x => x.ToolId,
                         principalTable: "Tools",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ToolsImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ToolId = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ToolsImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ToolsImages_Tools_ToolId",
+                        column: x => x.ToolId,
+                        principalTable: "Tools",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -150,7 +169,7 @@ namespace ToolWorkshop.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: false)
+                    StateId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -159,8 +178,7 @@ namespace ToolWorkshop.Migrations
                         name: "FK_Cities_States_StateId",
                         column: x => x.StateId,
                         principalTable: "States",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -170,7 +188,7 @@ namespace ToolWorkshop.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     DocumentType = table.Column<int>(type: "int", nullable: false),
@@ -199,8 +217,7 @@ namespace ToolWorkshop.Migrations
                         name: "FK_AspNetUsers_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -210,7 +227,7 @@ namespace ToolWorkshop.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
                     CityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -388,7 +405,7 @@ namespace ToolWorkshop.Migrations
                     Temporal_MovementId = table.Column<int>(type: "int", nullable: true),
                     MovementId = table.Column<int>(type: "int", nullable: true),
                     Catalogid = table.Column<int>(type: "int", nullable: false),
-                    Remarks = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Remarks = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Retun_Remarks = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -473,9 +490,11 @@ namespace ToolWorkshop.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryTool_ToolsId",
-                table: "CategoryTool",
-                column: "ToolsId");
+                name: "IX_Cities_Name_StateId",
+                table: "Cities",
+                columns: new[] { "Name", "StateId" },
+                unique: true,
+                filter: "[StateId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_StateId",
@@ -514,9 +533,39 @@ namespace ToolWorkshop.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_States_Name_CountryId",
+                table: "States",
+                columns: new[] { "Name", "CountryId" },
+                unique: true,
+                filter: "[CountryId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Temporal_movements_UserId",
                 table: "Temporal_movements",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tools_Name",
+                table: "Tools",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToolsCategories_CategoryId",
+                table: "ToolsCategories",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToolsCategories_ToolId_CategoryId",
+                table: "ToolsCategories",
+                columns: new[] { "ToolId", "CategoryId" },
+                unique: true,
+                filter: "[ToolId] IS NOT NULL AND [CategoryId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToolsImages_ToolId",
+                table: "ToolsImages",
+                column: "ToolId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Warehouses_CityId",
@@ -542,16 +591,16 @@ namespace ToolWorkshop.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CategoryTool");
-
-            migrationBuilder.DropTable(
                 name: "Movement_Details");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "ToolsCategories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "ToolsImages");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Catalogs");
@@ -561,6 +610,9 @@ namespace ToolWorkshop.Migrations
 
             migrationBuilder.DropTable(
                 name: "Temporal_movements");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Planograms");
