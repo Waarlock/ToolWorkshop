@@ -1,8 +1,87 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ToolWorkshop.Models.ToolsHomeViewModel>
+
+@{
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (var item in Model)
+{
+    <div class="row">
+        @if (item.Tool1 != null)
+        {
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card_title">@item.Tool1.Name</div>
+                    <div class="card_body">
+                        <img src="@item.Tool1.ImageFullPath" style="height:150px; max-width:280px;" />
+                        <p class="mt-2">
+                            @item.Tool1.Description
+                            <h4>@Html.DisplayFor(modelItem => item.Tool1.EAN)</h4>
+                        </p>
+                    </div>
+                    <div class="card_foot">
+                        <a asp-action="Details" asp-route-id="@item.Tool1.Id" class="btn btn-secondary">Detalles</a>
+                        <a asp-action="Add" asp-route-id="@item.Tool1.Id" class="btn btn-primary">Agregar</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (item.Tool2 != null)
+        {
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card_title">@item.Tool2.Name</div>
+                    <div class="card_body">
+                        <img src="@item.Tool2.ImageFullPath" style="height:150px; max-width:280px;" />
+                        <p class="mt-2">
+                            @item.Tool2.Description
+                            <h4>@Html.DisplayFor(modelItem => item.Tool2.EAN)</h4>
+                        </p>
+                    </div>
+                    <div class="card_foot">
+                        <a asp-action="Details" asp-route-id="@item.Tool1.Id" class="btn btn-secondary">Detalles</a>
+                        <a asp-action="Add" asp-route-id="@item.Tool1.Id" class="btn btn-primary">Agregar</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (item.Tool3 != null)
+        {
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card_title">@item.Tool3.Name</div>
+                    <div class="card_body">
+                        <img src="@item.Tool3.ImageFullPath" style="height:150px; max-width:280px;" />
+                        <p class="mt-2">
+                            @item.Tool3.Description
+                            <h4>@Html.DisplayFor(modelItem => item.Tool3.EAN)</h4>
+                        </p>
+                    </div>
+                    <div class="card_foot">
+                        <a asp-action="Details" asp-route-id="@item.Tool1.Id" class="btn btn-secondary">Detalles</a>
+                        <a asp-action="Add" asp-route-id="@item.Tool1.Id" class="btn btn-primary">Agregar</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (item.Tool4 != null)
+        {
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card_title">@item.Tool4.Name</div>
+                    <div class="card_body">
+                        <img src="@item.Tool4.ImageFullPath" style="height:150px; max-width:280px;" />
+                        <p class="mt-2">
+                            @item.Tool4.Description
+                            <h4>@Html.DisplayFor(modelItem => item.Tool4.EAN)</h4>
+                        </p>
+                    </div>
+                    <div class="card_foot">
+                        <a asp-action="Details" asp-route-id="@item.Tool1.Id" class="btn btn-secondary">Detalles</a>
+                        <a asp-action="Add" asp-route-id="@item.Tool1.Id" class="btn btn-primary">Agregar</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
