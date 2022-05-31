@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
+using ToolWorkshop.Helpers;
+//using ToolWorkshop.Web;
+//using static ToolWorkshop.Helpers.ModalHelper;
 
 namespace ToolWorkshop.Controllers
 {
@@ -18,7 +21,10 @@ namespace ToolWorkshop.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            //return View(await _context.Categories.ToListAsync());
+            return View(await _context.Categories
+                .Include(c => c.ToolCategories)
+                .ToListAsync());
         }
 
         public IActionResult Create()

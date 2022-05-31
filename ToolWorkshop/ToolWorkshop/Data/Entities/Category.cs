@@ -13,6 +13,11 @@ namespace ToolWorkshop.Data.Entities
         public string Name { get; set; }
 
         public ICollection<ToolCategory> ToolCategories { get; set; }
+
+
+        [Display(Name = "# Productos")]
+        public int ProductsNumber => ToolCategories == null ? 0 : ToolCategories.Count();
+
         //public virtual ICollection<Tool>? Tools { get; set; }
     }
 }

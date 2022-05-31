@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToolWorkshop.Data.Entities
 {
     public class Tool
     {
-        [Key]
+        //[Key]
         public int Id { get; set; }
 
         [Display(Name = "Codigo de Barras")]
@@ -18,6 +19,7 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public string Name { get; set; }
 
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Descripcion de Herramienta")]
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
@@ -44,9 +46,12 @@ namespace ToolWorkshop.Data.Entities
             : ToolImages.FirstOrDefault().ImageFullPath;
     }
 
-      // public virtual ICollection<Category>? Categories { get; set; }
+   // public ICollection<SaleDetail> SaleDetails { get; set; }
 
-     // public virtual ICollection<Catalog>? Catalogs { get; set; }
-    }
+    //public virtual ICollection<Category>? Categories { get; set; }
+
+
+    // public virtual ICollection<Catalog>? Catalogs { get; set; }
+}
 
 

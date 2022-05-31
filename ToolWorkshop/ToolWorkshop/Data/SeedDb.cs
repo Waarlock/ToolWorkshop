@@ -28,10 +28,51 @@ namespace ToolWorkshop.Data
             await CheckRolesAsync();
             await CheckWarehousePlanogramAsync();
             await CheckUserAsync("1010", "Juan", "Vasquez", "juanv@yopmail.com", "322 311 4620", "Avenida Siempreviva", "Brad.jpg", UserType.Admin);
-            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", "bob.jpg", UserType.Admin);
-            await CheckUserAsync("2010", "Pedro", "Galindo", "pedrog@yopmail.com", "322 311 4620", "Privet Drive 4", "LedysBedoya.jpeg", UserType.User);
-           // await CheckToolsAsync();
+            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", "liv.jpg", UserType.Admin);
+            await CheckUserAsync("2010", "Pedro", "Galindo", "pedrog@yopmail.com", "322 311 4620", "Privet Drive 4", "bob.jpg", UserType.User);
+            await CheckToolAsync();
 
+        }
+
+        private async Task CheckToolAsync()
+        {
+            if (!_context.Tools.Any())
+            {
+                await AddToolAsync("Micrometro", "9F7845SE7874", 12F, new List<string>() { "Medición" }, new List<string>() { "micrometro.png", "micrometro2.png" });
+                await AddToolAsync("Caja de Herramienta", "9X7000R07874", 15F, new List<string>() { "Medición", "Precisión", "Mecánicas" }, new List<string>() { "CajaHerrammientas.png", "CajaHerrammientas2.png", "CajaHerrammientas3.png" });
+                await AddToolAsync("Pulidora", "6F7845SE7234", 3F, new List<string>() { "Precisión", "Corte" }, new List<string>() { "cortadora.png", "cortadora2.png" });
+                await AddToolAsync("Pie de Rey", "10R5445XE7001", 8F, new List<string>() { "Medición" }, new List<string>() { "PieDeRey.png", "PieDeRey2.png" });
+                await AddToolAsync("Taladro", "50T5455PF054", 3F, new List<string>() { "Precisión" }, new List<string>() { "taladro.png", "taladro2.png", "taladro3.png" });
+                await AddToolAsync("Torquimetro", "56Y565XL1011", 6F, new List<string>() { "Medición" }, new List<string>() { "torquimetro2.png" });
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task AddToolAsync(string name, String EAN, float stock, List<string> categories, List<string> images)
+        {
+            Tool tool = new()
+            {
+                Description = name,
+                Name = name,
+                EAN = EAN,
+                Stock = stock,
+                ToolCategories = new List<ToolCategory>(),
+                ToolImages = new List<ToolImage>()
+            };
+
+            foreach (string? category in categories)
+            {
+                tool.ToolCategories.Add(new ToolCategory { Category = await _context.Categories.FirstOrDefaultAsync(c => c.Name == category) });
+            }
+
+
+            foreach (string? image in images)
+            {
+                Guid imageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\tools\\{image}", "products");
+                tool.ToolImages.Add(new ToolImage { ImageId = imageId });
+            }
+
+            _context.Tools.Add(tool);
         }
 
         private async Task<User> CheckUserAsync(
@@ -263,9 +304,13 @@ namespace ToolWorkshop.Data
         {
             if (!_context.Categories.Any())
             {
-                _context.Categories.Add(new Category { Name = "Herramientas Mecánicas" });
+                _context.Categories.Add(new Category { Name = "Mecánicas" });
+                _context.Categories.Add(new Category { Name = "Medición" });
+                _context.Categories.Add(new Category { Name = "Precisión" });
+                _context.Categories.Add(new Category { Name = "Corte" });
                 await _context.SaveChangesAsync();
             }
+
         }
     }
 }

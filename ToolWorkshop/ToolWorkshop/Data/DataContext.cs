@@ -18,8 +18,8 @@ namespace ToolWorkshop.Data
         public DbSet<Planogram> Planograms { get; set; } 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tool> Tools { get; set; }
-        public DbSet<ToolCategory> ToolsCategories { get; set; }
-        public DbSet<ToolImage> ToolsImages { get; set; }
+        public DbSet<ToolCategory> ToolCategories { get; set; }
+        public DbSet<ToolImage> ToolImages { get; set; }
         public DbSet<Catalog> Catalogs { get; set; }
         public DbSet<Movement> Movements { get; set; }
         public DbSet<Movement_Detail> Movement_Details { get; set; }

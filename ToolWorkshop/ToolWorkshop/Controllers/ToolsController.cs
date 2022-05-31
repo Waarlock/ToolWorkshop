@@ -1,14 +1,13 @@
-﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
+using ToolWorkshop.Helpers;
+using ToolWorkshop.Models;
+//using ToolWorkshop.Web;
+//using static ToolWorkshop.Helpers.ModalHelper;
+
 
 namespace ToolWorkshop.Controllers
 {
@@ -16,59 +15,99 @@ namespace ToolWorkshop.Controllers
     public class ToolsController : Controller
     {
         private readonly DataContext _context;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IBlobHelper _blobHelper;
+        // private readonly IFlashMessage _flashMessage;
 
-        public ToolsController(DataContext context)
+        public ToolsController(DataContext context, ICombosHelper combosHelper, IBlobHelper blobHelper/*, IFlashMessage flashMessage*/)
         {
             _context = context;
+            _combosHelper = combosHelper;
+            _blobHelper = blobHelper;
+            //_flashMessage = flashMessage;
         }
 
-        // GET: Tools
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tools.ToListAsync());
+            return View(await _context.Tools
+                .Include(p => p.ToolImages)
+                .Include(p => p.ToolCategories)
+                .ThenInclude(pc => pc.Category)
+                .ToListAsync());
         }
-
-        // GET: Tools/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Create()
         {
-            if (id == null)
+            CreateToolViewModel model = new()
             {
-                return NotFound();
-            }
+                Categories = await _combosHelper.GetComboCategoriesAsync(),
+            };
 
-            var tool = await _context.Tools
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tool == null)
-            {
-                return NotFound();
-            }
-
-            return View(tool);
+            return View(model);
         }
 
-        // GET: Tools/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Tools/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EAN,Name,Description")] Tool tool)
+        public async Task<IActionResult> Create(CreateToolViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tool);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Guid imageId = Guid.Empty;
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "products");
+                }
+
+                Tool tool = new()
+                {
+                    Description = model.Description,
+                    Name = model.Name,
+                    EAN = model.EAN,
+                    Stock = model.Stock,
+                };
+
+                tool.ToolCategories = new List<ToolCategory>()
+                {
+                     new ToolCategory
+                     {
+                        Category = await _context.Categories.FindAsync(model.CategoryId)
+                }
+                     };
+
+                if (imageId != Guid.Empty)
+                {
+                    tool.ToolImages = new List<ToolImage>()
+                    {
+                        new ToolImage { ImageId = imageId }
+                    };
+                }
+
+                try
+                {
+                    _context.Add(tool);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe una herramienta con el mismo nombre.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
-            return View(tool);
+
+            model.Categories = await _combosHelper.GetComboCategoriesAsync();
+            return View(model);
         }
 
-        // GET: Tools/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,50 +115,244 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var tool = await _context.Tools.FindAsync(id);
+            Tool tool= await _context.Tools.FindAsync(id);
             if (tool == null)
             {
                 return NotFound();
             }
-            return View(tool);
+
+            EditToolViewModel model = new()
+            {
+                Description = tool.Description,
+                Id = tool.Id,
+                Name = tool.Name,
+                EAN = tool.EAN,
+                Stock = tool.Stock,
+            };
+
+            return View(model);
         }
 
-        // POST: Tools/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EAN,Name,Description")] Tool tool)
+        public async Task<IActionResult> Edit(int id, CreateToolViewModel model)
         {
-            if (id != tool.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(tool);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ToolExists(tool.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                Tool tool= await _context.Tools.FindAsync(model.Id);
+                tool.Description = model.Description;
+                tool.Name = model.Name;
+                tool.EAN = model.EAN;
+                tool.Stock = model.Stock;
+                _context.Update(tool);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                {
+                    ModelState.AddModelError(string.Empty, "Ya existe una herramienta con el mismo nombre.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                ModelState.AddModelError(string.Empty, exception.Message);
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Tool tool= await _context.Tools
+                .Include(p => p.ToolImages)
+                .Include(p => p.ToolCategories)
+                .ThenInclude(pc => pc.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (tool == null)
+            {
+                return NotFound();
+            }
+
             return View(tool);
         }
+        public async Task<IActionResult> AddImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        // GET: Tools/Delete/5
+            Tool tool= await _context.Tools.FindAsync(id);
+            if (tool== null)
+            {
+                return NotFound();
+            }
+
+            AddToolImageViewModel model = new()
+            {
+                ToolId = tool.Id,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddImage(AddToolImageViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "products");
+                Tool tool = await _context.Tools.FindAsync(model.ToolId);
+                ToolImage productImage = new()
+                {
+                    Tool= tool,
+                    ImageId = imageId,
+                };
+
+                try
+                {
+                    _context.Add(productImage);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { Id = tool.Id });
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ToolImage toolImage = await _context.ToolImages
+                .Include(pi => pi.Tool)
+                .FirstOrDefaultAsync(pi => pi.Id == id);
+            if (toolImage == null)
+            {
+                return NotFound();
+            }
+
+            await _blobHelper.DeleteBlobAsync(toolImage.ImageId, "products");
+            _context.ToolImages.Remove(toolImage);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = toolImage.Tool.Id });
+        }
+
+        public async Task<IActionResult> AddCategory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Tool tool= await _context.Tools
+                .Include(p => p.ToolCategories)
+                .ThenInclude(pc =>pc.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (tool == null)
+            {
+                return NotFound();
+            }
+
+            List<Category> categories = tool.ToolCategories.Select(pc => new Category 
+            {
+                Id = pc.Category.Id,
+                Name = pc.Category.Name,
+            }).ToList();
+
+            AddCategoryToolViewModel model = new()
+            {
+                ToolId = tool.Id,
+                Categories = await _combosHelper.GetComboCategoriesAsync(categories),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCategory(AddCategoryToolViewModel model)
+        { 
+            Tool tool = await _context.Tools
+                                .Include(p => p.ToolCategories)
+                                .ThenInclude(pc => pc.Category)
+                                .FirstOrDefaultAsync(p => p.Id == model.ToolId);
+            if (ModelState.IsValid)
+            {
+               
+                ToolCategory productCategory = new()
+                {
+                    Category = await _context.Categories.FindAsync(model.CategoryId),
+                    Tool = tool,
+                };
+
+                try
+                {
+                    _context.Add(productCategory);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { Id = tool.Id });
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            
+           
+                List<Category> categories = tool.ToolCategories.Select(pc => new Category
+                {
+                    Id = pc.Category.Id,
+                    Name = pc.Category.Name,
+                }).ToList();
+
+            model.Categories = await _combosHelper.GetComboCategoriesAsync(categories);
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> DeleteCategory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ToolCategory productCategory = await _context.ToolCategories
+                .Include(pc => pc.Tool)
+                .FirstOrDefaultAsync(pc => pc.Id == id);
+            if (productCategory == null)
+            {
+                return NotFound();
+            }
+
+            _context.ToolCategories.Remove(productCategory);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = productCategory.Tool.Id });
+        }
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,8 +360,10 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            var tool = await _context.Tools
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Tool tool= await _context.Tools
+                .Include(p => p.ToolCategories)
+                .Include(p => p.ToolImages)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (tool == null)
             {
                 return NotFound();
@@ -137,20 +372,23 @@ namespace ToolWorkshop.Controllers
             return View(tool);
         }
 
-        // POST: Tools/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(Tool model)
         {
-            var tool = await _context.Tools.FindAsync(id);
+            Tool tool = await _context.Tools
+                .Include(p => p.ToolImages)
+                .Include(p => p.ToolCategories)
+                .FirstOrDefaultAsync(p => p.Id == model.Id);
+
             _context.Tools.Remove(tool);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool ToolExists(int id)
-        {
-            return _context.Tools.Any(e => e.Id == id);
+            foreach (ToolImage productImage in tool.ToolImages)
+            {
+                await _blobHelper.DeleteBlobAsync(productImage.ImageId, "products");
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
