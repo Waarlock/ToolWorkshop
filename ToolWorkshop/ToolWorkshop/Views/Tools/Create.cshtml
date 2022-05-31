@@ -1,4 +1,4 @@
-﻿@model ToolWorkshop.Data.Entities.Tool
+﻿@model ToolWorkshop.Models.CreateToolViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,7 +12,7 @@
     <div class="col-md-12">
         <form asp-action="Create" enctype="multipart/form-data"> 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           <! –– TODO:     <input type="hidden" asp-for="Categories" /> ––>
+           <input type="hidden" asp-for="Categories"/>
             <partial name="_CreateTool"/>
             <div class="form-group mt-2">
                 <input type="submit" value="Crear" class="btn btn-outline-primary" />

@@ -443,7 +443,7 @@ namespace ToolWorkshop.Migrations
                         .IsUnique()
                         .HasFilter("[ToolId] IS NOT NULL AND [CategoryId] IS NOT NULL");
 
-                    b.ToTable("ToolsCategories");
+                    b.ToTable("ToolCategories");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolImage", b =>
@@ -464,7 +464,7 @@ namespace ToolWorkshop.Migrations
 
                     b.HasIndex("ToolId");
 
-                    b.ToTable("ToolsImages");
+                    b.ToTable("ToolImages");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>

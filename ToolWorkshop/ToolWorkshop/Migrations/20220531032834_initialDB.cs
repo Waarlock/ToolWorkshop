@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ToolWorkshop.Migrations
 {
-    public partial class UntilTools : Migration
+    public partial class initialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,7 +120,7 @@ namespace ToolWorkshop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ToolsCategories",
+                name: "ToolCategories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -130,21 +130,21 @@ namespace ToolWorkshop.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ToolsCategories", x => x.Id);
+                    table.PrimaryKey("PK_ToolCategories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ToolsCategories_Categories_CategoryId",
+                        name: "FK_ToolCategories_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ToolsCategories_Tools_ToolId",
+                        name: "FK_ToolCategories_Tools_ToolId",
                         column: x => x.ToolId,
                         principalTable: "Tools",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ToolsImages",
+                name: "ToolImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -154,9 +154,9 @@ namespace ToolWorkshop.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ToolsImages", x => x.Id);
+                    table.PrimaryKey("PK_ToolImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ToolsImages_Tools_ToolId",
+                        name: "FK_ToolImages_Tools_ToolId",
                         column: x => x.ToolId,
                         principalTable: "Tools",
                         principalColumn: "Id");
@@ -545,27 +545,27 @@ namespace ToolWorkshop.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tools_Name",
-                table: "Tools",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ToolsCategories_CategoryId",
-                table: "ToolsCategories",
+                name: "IX_ToolCategories_CategoryId",
+                table: "ToolCategories",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ToolsCategories_ToolId_CategoryId",
-                table: "ToolsCategories",
+                name: "IX_ToolCategories_ToolId_CategoryId",
+                table: "ToolCategories",
                 columns: new[] { "ToolId", "CategoryId" },
                 unique: true,
                 filter: "[ToolId] IS NOT NULL AND [CategoryId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ToolsImages_ToolId",
-                table: "ToolsImages",
+                name: "IX_ToolImages_ToolId",
+                table: "ToolImages",
                 column: "ToolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tools_Name",
+                table: "Tools",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Warehouses_CityId",
@@ -594,10 +594,10 @@ namespace ToolWorkshop.Migrations
                 name: "Movement_Details");
 
             migrationBuilder.DropTable(
-                name: "ToolsCategories");
+                name: "ToolCategories");
 
             migrationBuilder.DropTable(
-                name: "ToolsImages");
+                name: "ToolImages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

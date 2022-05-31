@@ -12,8 +12,8 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220527041812_UntilTools")]
-    partial class UntilTools
+    [Migration("20220531032834_initialDB")]
+    partial class initialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -445,7 +445,7 @@ namespace ToolWorkshop.Migrations
                         .IsUnique()
                         .HasFilter("[ToolId] IS NOT NULL AND [CategoryId] IS NOT NULL");
 
-                    b.ToTable("ToolsCategories");
+                    b.ToTable("ToolCategories");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.ToolImage", b =>
@@ -466,7 +466,7 @@ namespace ToolWorkshop.Migrations
 
                     b.HasIndex("ToolId");
 
-                    b.ToTable("ToolsImages");
+                    b.ToTable("ToolImages");
                 });
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.User", b =>
