@@ -78,6 +78,78 @@ namespace ToolWorkshop.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Tool tool = await _context.Tools
+                .Include(p => p.ToolImages)
+                .Include(p => p.ToolCategories)
+                .ThenInclude(pc => pc.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (tool == null)
+            {
+                return NotFound();
+            }
+
+            string categories = string.Empty;
+            foreach (ToolCategory? category in tool.ToolCategories)
+            {
+                categories += $"{category.Category.Name}, ";
+            }
+            categories = categories.Substring(0, categories.Length - 2);
+
+            AddToolToCartViewModel model = new()
+            {
+                Categories = categories,
+                Description = tool.Description,
+                Id = tool.Id,
+                Name = tool.Name,
+                EAN = tool.EAN,
+                ToolImages = tool.ToolImages,
+                Quantity = 1,
+                Stock = tool.Stock,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(AddToolToCartViewModel model)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            Tool tool = await _context.Tools.FindAsync(model.Id);
+            if (tool == null)
+            {
+                return NotFound();
+            }
+
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporalSale = new()
+            { // TODO: add start and finish TIME
+                Tool = tool,
+                Quantity = model.Quantity,
+                Remarks = model.Remarks,
+                User = user
+            };
+
+            _context.Temporal_Movements.Add(temporalSale);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
         public IActionResult Privacy()
         {
             return View();

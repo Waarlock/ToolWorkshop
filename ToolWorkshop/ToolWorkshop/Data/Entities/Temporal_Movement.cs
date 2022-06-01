@@ -29,7 +29,10 @@ namespace ToolWorkshop.Data.Entities
         [Display(Name = "Estado")]
      //   [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         MovementStatus status { get; set; }
-           
+
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Comentarios")]
+        public string Remarks { get; set; }
 
         [Display(Name = "Detalles de Movimiento")]
         public virtual ICollection<Movement_Detail>? Details { get; set; }
