@@ -12,8 +12,8 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220531232201_addTemporalMovements")]
-    partial class addTemporalMovements
+    [Migration("20220601031550_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

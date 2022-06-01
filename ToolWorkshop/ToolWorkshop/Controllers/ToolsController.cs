@@ -37,7 +37,7 @@ namespace ToolWorkshop.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            CreateToolViewModel model = new()
+            ToolViewModel model = new()
             {
                 Categories = await _combosHelper.GetComboCategoriesAsync(),
             };
@@ -47,16 +47,11 @@ namespace ToolWorkshop.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateToolViewModel model)
+        public async Task<IActionResult> Create(ToolViewModel model)
         {
             if (ModelState.IsValid)
             {
-                Guid imageId = Guid.Empty;
-                if (model.ImageFile != null)
-                {
-                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "products");
-                }
-
+                
                 Tool tool = new()
                 {
                     Description = model.Description,
@@ -72,14 +67,6 @@ namespace ToolWorkshop.Controllers
                         Category = await _context.Categories.FindAsync(model.CategoryId)
                 }
                      };
-
-                if (imageId != Guid.Empty)
-                {
-                    tool.ToolImages = new List<ToolImage>()
-                    {
-                        new ToolImage { ImageId = imageId }
-                    };
-                }
 
                 try
                 {
@@ -121,7 +108,7 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            EditToolViewModel model = new()
+            ToolViewModel model = new()
             {
                 Description = tool.Description,
                 Id = tool.Id,
@@ -135,7 +122,7 @@ namespace ToolWorkshop.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CreateToolViewModel model)
+        public async Task<IActionResult> Edit(int id, ToolViewModel model)
         {
             if (id != model.Id)
             {
