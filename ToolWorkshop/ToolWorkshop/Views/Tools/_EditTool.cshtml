@@ -1,4 +1,4 @@
-﻿@model ToolWorkshop.Models.EditToolViewModel
+﻿@model ToolWorkshop.Models.ToolViewModel
 
 <div class="row">
     <div class="col-md-6">
@@ -13,6 +13,13 @@
             <input asp-for="Description" class="form-control" />
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
+
+        <!--
+        <div class="form-group">
+            <label asp-for="CategoryId" class="control-label"></label>
+            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>-->
     </div>
     <div class="col-md-6">
         <div class="form-group">
@@ -26,5 +33,111 @@
             <input asp-for="Stock" class="form-control" />
             <span asp-validation-for="Stock" class="text-danger"></span>
         </div>
+
+        <!--<div class="form-group">
+            <label asp-for="ImageFile" class="control-label"></label>
+            <input asp-for="ImageFile" class="form-control" type="file" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>-->
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Imágenes</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive table-striped" id="ImagesTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ToolImages.FirstOrDefault().ImageFullPath)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ToolImages)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.ImageFullPath" style="width:150px;" />
+                                </td>
+                                <td>
+                                    <a asp-action="DeleteImage" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Categorías</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive table-striped" id="CategoriesTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ToolCategories.FirstOrDefault().Category.Name)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ToolCategories)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                                </td>
+                                <td>
+                                    <a asp-action="DeleteCategory" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#ImagesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+            $('#CategoriesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+}
+
+

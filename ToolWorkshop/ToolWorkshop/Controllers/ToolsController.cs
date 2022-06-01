@@ -37,7 +37,7 @@ namespace ToolWorkshop.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            CreateToolViewModel model = new()
+            ToolViewModel model = new()
             {
                 Categories = await _combosHelper.GetComboCategoriesAsync(),
             };
@@ -47,16 +47,11 @@ namespace ToolWorkshop.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateToolViewModel model)
+        public async Task<IActionResult> Create(ToolViewModel model)
         {
             if (ModelState.IsValid)
             {
-                Guid imageId = Guid.Empty;
-                if (model.ImageFile != null)
-                {
-                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "products");
-                }
-
+                
                 Tool tool = new()
                 {
                     Description = model.Description,
@@ -70,16 +65,8 @@ namespace ToolWorkshop.Controllers
                      new ToolCategory
                      {
                         Category = await _context.Categories.FindAsync(model.CategoryId)
-                }
-                     };
-
-                if (imageId != Guid.Empty)
-                {
-                    tool.ToolImages = new List<ToolImage>()
-                    {
-                        new ToolImage { ImageId = imageId }
-                    };
-                }
+                     }
+                };
 
                 try
                 {
@@ -115,27 +102,43 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            Tool tool= await _context.Tools.FindAsync(id);
+            Tool tool= await _context.Tools.Include(p => p.ToolImages)
+                .Include(p => p.ToolCategories)
+                .ThenInclude(pc => pc.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (tool == null)
             {
                 return NotFound();
             }
 
-            EditToolViewModel model = new()
+           
+
+            ToolViewModel model = new()
             {
                 Description = tool.Description,
                 Id = tool.Id,
                 Name = tool.Name,
                 EAN = tool.EAN,
                 Stock = tool.Stock,
+                ToolImages = tool.ToolImages,
+                ToolCategories = tool.ToolCategories
             };
 
+            tool.ToolCategories = new List<ToolCategory>()
+            {
+                new ToolCategory
+                {
+                    Category = await _context.Categories.FindAsync(model.CategoryId)
+                }
+            };
+
+            model.Categories = await _combosHelper.GetComboCategoriesAsync();
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CreateToolViewModel model)
+        public async Task<IActionResult> Edit(int id, ToolViewModel model)
         {
             if (id != model.Id)
             {
