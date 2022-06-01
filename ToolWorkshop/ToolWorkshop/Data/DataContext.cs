@@ -23,10 +23,8 @@ namespace ToolWorkshop.Data
         public DbSet<Catalog> Catalogs { get; set; }
         public DbSet<Movement> Movements { get; set; }
         public DbSet<Movement_Detail> Movement_Details { get; set; }
-        public DbSet<Temporal_Movement> Temporal_movements { get; set; }
+        public DbSet<Temporal_Movement> Temporal_Movements { get; set; }
         
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
