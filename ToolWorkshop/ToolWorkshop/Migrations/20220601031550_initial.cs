@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ToolWorkshop.Migrations
 {
-    public partial class initialDB : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -327,24 +327,30 @@ namespace ToolWorkshop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Temporal_movements",
+                name: "Temporal_Movements",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ToolId = table.Column<int>(type: "int", nullable: true),
+                    Quantity = table.Column<float>(type: "real", nullable: false),
                     Start_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    End_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Temporal_movements", x => x.Id);
+                    table.PrimaryKey("PK_Temporal_Movements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Temporal_movements_AspNetUsers_UserId",
+                        name: "FK_Temporal_Movements_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Temporal_Movements_Tools_ToolId",
+                        column: x => x.ToolId,
+                        principalTable: "Tools",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -423,9 +429,9 @@ namespace ToolWorkshop.Migrations
                         principalTable: "Movements",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Movement_Details_Temporal_movements_Temporal_MovementId",
+                        name: "FK_Movement_Details_Temporal_Movements_Temporal_MovementId",
                         column: x => x.Temporal_MovementId,
-                        principalTable: "Temporal_movements",
+                        principalTable: "Temporal_Movements",
                         principalColumn: "Id");
                 });
 
@@ -540,8 +546,13 @@ namespace ToolWorkshop.Migrations
                 filter: "[CountryId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Temporal_movements_UserId",
-                table: "Temporal_movements",
+                name: "IX_Temporal_Movements_ToolId",
+                table: "Temporal_Movements",
+                column: "ToolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Temporal_Movements_UserId",
+                table: "Temporal_Movements",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -609,7 +620,7 @@ namespace ToolWorkshop.Migrations
                 name: "Movements");
 
             migrationBuilder.DropTable(
-                name: "Temporal_movements");
+                name: "Temporal_Movements");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -618,10 +629,10 @@ namespace ToolWorkshop.Migrations
                 name: "Planograms");
 
             migrationBuilder.DropTable(
-                name: "Tools");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Tools");
 
             migrationBuilder.DropTable(
                 name: "Warehouses");
