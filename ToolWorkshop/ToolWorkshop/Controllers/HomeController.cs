@@ -26,8 +26,57 @@ namespace ToolWorkshop.Controllers
             _userHelper = userHelper;
             _flashMessage = flashMessage;
         }
+    
+        public async Task<IActionResult> Confirm(int? id)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
+            }
+            Temporal_Movement temporal_Movement = await _context.Temporal_Movements
+                 .Include(tm => tm.Details)
+                 .ThenInclude(d => d.Catalog)
+                 .ThenInclude(c => c.Tool)
+                 .Where(tm => tm.User.Id == user.Id)
+                 .Where(tm => tm.Status == Enums.MovementStatus.OPENED)
+                 .FirstOrDefaultAsync();
+            if (temporal_Movement == null)
+            {
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
+            }
 
+            Movement movement = new()
+            {
+                Details = temporal_Movement.Details,
+                Start_DateTime = DateTime.UtcNow,
+                Status = Enums.MovementStatus.OPENED,
+                User = user
+            };
+
+            IEnumerable<Movement_Detail> details = temporal_Movement.Details;
+
+            foreach (Movement_Detail d in details)
+            {
+                Catalog c = d.Catalog;
+                c.Status = Enums.CatalogStatus.UNAVAILABLE;
+                _context.Catalogs.Update(c);
+            }
+
+            _context.Movements.Add(movement);
+            _context.Temporal_Movements.Remove(temporal_Movement);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+        
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -104,7 +153,8 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             if (!User.Identity.IsAuthenticated)
@@ -115,13 +165,15 @@ namespace ToolWorkshop.Controllers
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
@@ -176,6 +228,11 @@ namespace ToolWorkshop.Controllers
                     Catalog = currentCatalog,
                     Remarks = ""
                 });
+            }
+            else
+            {
+                _flashMessage.Info("Lo sentimos en el momento no hay disponibilidad de esta herramienta");
+                return RedirectToAction(nameof(Index));
             }
 
             if (temporal_Movement.Id == 0)
@@ -278,7 +335,8 @@ namespace ToolWorkshop.Controllers
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             List<Temporal_Movement>? temporal_Movements = await _context.Temporal_Movements
@@ -313,19 +371,22 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
@@ -338,7 +399,8 @@ namespace ToolWorkshop.Controllers
 
             if (null == temporal_Movement)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
@@ -362,19 +424,22 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
@@ -387,7 +452,8 @@ namespace ToolWorkshop.Controllers
 
             if (null == temporal_Movement)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
@@ -410,19 +476,22 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index)); ;
             }
 
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
@@ -435,18 +504,20 @@ namespace ToolWorkshop.Controllers
 
             if (temporal_Movement == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
-            IEnumerable<Catalog> catalogs = temporal_Movement.Details.Select(d=> d.Catalog).Where(c=> c.ToolId == tool.Id);
+            IEnumerable<Movement_Detail> details = temporal_Movement.Details.Where(d=> d.Catalog.ToolId == tool.Id);
 
-            foreach(Catalog c in catalogs)
+            foreach(Movement_Detail d in details)
             {
+                Catalog c = d.Catalog;
                 c.Status = Enums.CatalogStatus.AVAILABLE;
                 _context.Catalogs.Update(c);
+                _context.Movement_Details.Remove(d);
             }
-
-            _context.Temporal_Movements.Remove(temporal_Movement);
+           
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ShowCart));
         }
@@ -456,19 +527,22 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
@@ -480,7 +554,8 @@ namespace ToolWorkshop.Controllers
 
             if (null == temporal_Movement)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             var details = _context.Temporal_Movements
@@ -519,19 +594,22 @@ namespace ToolWorkshop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             Tool tool = await _context.Tools.FindAsync(id);
             if (tool == null)
-            {
-                return NotFound();
+            {;
+                _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                return RedirectToAction(nameof(Index));
             }
 
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound();
+                _flashMessage.Danger("No se ha podido reconocer al usuario.");
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -546,7 +624,8 @@ namespace ToolWorkshop.Controllers
 
                 if (null == temporal_Movement)
                 {
-                    return NotFound();
+                    _flashMessage.Danger("Lo sentimos ha ocurrido un error");
+                    return RedirectToAction(nameof(Index));
                 }
 
                 IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
@@ -627,7 +706,7 @@ namespace ToolWorkshop.Controllers
             }
             else
             {
-                //No hay suficientes herramientas
+                _flashMessage.Info("Lo sentimos en el momento no hay disponibilidad de esta herramienta");
                 return false;
             }
 

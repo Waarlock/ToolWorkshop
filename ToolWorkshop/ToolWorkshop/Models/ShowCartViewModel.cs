@@ -6,6 +6,8 @@ namespace ToolWorkshop.Models
 {
     public class ShowCartViewModel
     {
+        public int Id { get; set; }
+
         [Display(Name = "Usuario")]
         public User User { get; set; }
 
