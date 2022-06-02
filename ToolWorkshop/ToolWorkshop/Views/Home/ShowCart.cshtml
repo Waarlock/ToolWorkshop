@@ -11,18 +11,29 @@
     <div class="col-md-4">
         <dl class="row">
             <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Quantity)
+                @Html.DisplayNameFor(model => model.User)
             </dt>
             <dd class="col-sm-8">
-                <h3>@Html.DisplayFor(model => model.Quantity)</h3>
-            </dd>
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.EAN)
-            </dt>
-            <dd class="col-sm-8">
-                <h3>@Html.DisplayFor(model => model.EAN)</h3>
+                <h3>@Html.DisplayFor(model => model.User.FullName)</h3>
             </dd>
         </dl>
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Start_DateTime)
+            </dt>
+            <dd class="col-sm-8">
+                <h3>@Html.DisplayFor(model => model.Start_DateTime)</h3>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.GeneralQuantity)
+            </dt>
+            <dd class="col-sm-8">
+                <h3>@Html.DisplayFor(model => model.GeneralQuantity)</h3>
+            </dd>
+        </dl>
+        
     </div>
     <div class="col-md-8">
             <div class="col-md-12">
@@ -64,48 +75,44 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.tool.EAN)
                             </th>
-                            <th></th>
+                            <th>-</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Quantity)
+                                @Html.DisplayNameFor(model => model.ItemQuantity)
                             </th>
-                            <th></th>                           
-                            <th></th>
+                            <th>+</th>                           
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach (var item in Model.Temporal_Movements)
+                        @foreach (var item in Model.Movement_Details_Grouped)
                         {
                             <tr>
                                 <td>
                                     <div class="zoom">
-                                        <img src="@item.Details.Select(d=> d.Catalog).Select(c=> c.Tool).FirstOrDefault().ImageFullPath" style="width:100px;" />
+                                        <img src="@item.Select(i=> i.Catalog).FirstOrDefault().Tool.ImageFullPath" style="width:100px;" />
                                     </div>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Details.Select(d=> d.Catalog).Select(c=> c.Tool).FirstOrDefault().Name)
+                                    @Html.DisplayFor(modelItem => item.Select(i=> i.Catalog).FirstOrDefault().Tool.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Details.FirstOrDefault().Remarks)
+                                    @Html.DisplayFor(modelItem => item.FirstOrDefault().Remarks)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Details.Select(d=> d.Catalog).Select(c=> c.Tool).FirstOrDefault().EAN)
+                                    @Html.DisplayFor(modelItem => item.Select(i=> i.Catalog).FirstOrDefault().Tool.EAN)
                                 </td>
                                 <td>
-                                    <a asp-action="DecreaseQuantity" asp-route-id="@item.Id" class="btn btn-secondary">-</a>
+                                    <a asp-action="DecreaseQuantity" asp-route-id="@item.Select(i=> i.Catalog).FirstOrDefault().ToolId" class="btn btn-secondary">-</a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => modelItem.Quantity)
+                                    @Model.Movement_Details.Count(i=> i.Catalog.ToolId == item.Select(i=> i.Catalog).FirstOrDefault().Tool.Id)
                                 </td>
                                 <td>
-                                    <a asp-action="IncreaseQuantity" asp-route-id="@item.Id" class="btn btn-primary">+</a>
+                                    <a asp-action="IncreaseQuantity" asp-route-id="@item.Select(i=> i.Catalog).FirstOrDefault().ToolId" class="btn btn-primary">+</a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => modelItem.Quantity)
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Borrar</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Select(i=> i.Temporal_Movement).FirstOrDefault().Id" class="btn btn-outline-warning">Editar</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Select(i=> i.Temporal_Movement).FirstOrDefault().Id" class="btn btn-outline-danger">Borrar</a>
                                 </td>
                             </tr>
                         }
