@@ -12,7 +12,7 @@ using ToolWorkshop.Data;
 namespace ToolWorkshop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220602210232_init")]
+    [Migration("20220602222030_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
