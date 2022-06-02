@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Diagnostics;
+using ToolWorkshop.Common;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
@@ -27,15 +28,64 @@ namespace ToolWorkshop.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            List<Tool> tools = await _context.Tools
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            ViewData["StockSortParm"] = sortOrder == "Stock" ? "StockDesc" : "Stock";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            IQueryable<Tool> query = _context.Tools
                 .Include(p => p.ToolImages)
                 .Include(p => p.ToolCategories)
-                .OrderBy(p => p.Description)
-                .ToListAsync();
+                .ThenInclude(pc => pc.Category);
 
-            HomeViewModel model = new() { Tools = tools };
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(p => (p.Name.ToLower().Contains(searchString.ToLower()) ||
+                                            p.ToolCategories.Any(pc => pc.Category.Name.ToLower().Contains(searchString.ToLower()))) );
+            }
+            else
+            {
+              //  query = query.Where(p => p.Stock > 0);
+            }
+
+            switch (sortOrder)
+            {
+                case "NameDesc":
+                    query = query.OrderByDescending(p => p.Name);
+                    break;
+                case "Stock":
+                    query = query.OrderBy(p => p.Stock);
+                    break;
+                case "StockDesc":
+                    query = query.OrderByDescending(p => p.Stock);
+                    break;
+                default:
+                    query = query.OrderBy(p => p.Name);
+                    break;
+            }
+
+            int pageSize = 8;
+
+            HomeViewModel model = new()
+            { 
+                Tools = await PaginatedList<Tool>.CreateAsync(query, pageNumber ?? 1, pageSize),
+
+                Categories = await _context.Categories.ToListAsync()
+            };
+
             User user = await _userHelper.GetUserAsync(User.Identity.Name);
             if (user != null)
             {
