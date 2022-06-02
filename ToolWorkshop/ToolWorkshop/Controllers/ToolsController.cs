@@ -5,6 +5,7 @@ using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
 using ToolWorkshop.Models;
+using Vereyon.Web;
 //using ToolWorkshop.Web;
 //using static ToolWorkshop.Helpers.ModalHelper;
 
@@ -17,14 +18,14 @@ namespace ToolWorkshop.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
-        // private readonly IFlashMessage _flashMessage;
+         private readonly IFlashMessage _flashMessage;
 
-        public ToolsController(DataContext context, ICombosHelper combosHelper, IBlobHelper blobHelper/*, IFlashMessage flashMessage*/)
+        public ToolsController(DataContext context, ICombosHelper combosHelper, IBlobHelper blobHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
-            //_flashMessage = flashMessage;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -78,16 +79,16 @@ namespace ToolWorkshop.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe una herramienta con el mismo nombre.");
+                        _flashMessage.Danger("Ya existe una herramienta con el mismo nombre.");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message);
                     }
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
 
@@ -160,16 +161,16 @@ namespace ToolWorkshop.Controllers
             {
                 if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                 {
-                    ModelState.AddModelError(string.Empty, "Ya existe una herramienta con el mismo nombre.");
+                    _flashMessage.Danger("Ya existe una herramienta con el mismo nombre.");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    _flashMessage.Danger(dbUpdateException.InnerException.Message);
                 }
             }
             catch (Exception exception)
             {
-                ModelState.AddModelError(string.Empty, exception.Message);
+                _flashMessage.Danger(exception.Message);
             }
 
             return View(model);
@@ -236,7 +237,7 @@ namespace ToolWorkshop.Controllers
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
 
@@ -319,7 +320,7 @@ namespace ToolWorkshop.Controllers
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message);
                 }
             }
 

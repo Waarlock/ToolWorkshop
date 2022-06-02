@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
+using Vereyon.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -40,6 +41,7 @@ builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<ICombosHelper, CombosHelper>();
 builder.Services.AddScoped<IBlobHelper, BlobHelper>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddFlashMessage();
 
 var app = builder.Build();
 SeedData(app);
@@ -67,6 +69,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
