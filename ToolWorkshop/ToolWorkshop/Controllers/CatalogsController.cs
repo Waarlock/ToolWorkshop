@@ -38,7 +38,7 @@ namespace ToolWorkshop.Controllers
             var catalog = await _context.Catalogs
                 .Include(c => c.Planogram)
                 .Include(c => c.Tool)
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.SKU == id);
             if (catalog == null)
             {
                 return NotFound();
@@ -98,7 +98,7 @@ namespace ToolWorkshop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,ToolId,PlanogramId,SKU,ToolImageId")] Catalog catalog)
         {
-            if (id != catalog.id)
+            if (id != catalog.SKU)
             {
                 return NotFound();
             }
@@ -112,7 +112,7 @@ namespace ToolWorkshop.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CatalogExists(catalog.id))
+                    if (!CatalogExists(catalog.SKU))
                     {
                         return NotFound();
                     }
@@ -139,7 +139,7 @@ namespace ToolWorkshop.Controllers
             var catalog = await _context.Catalogs
                 .Include(c => c.Planogram)
                 .Include(c => c.Tool)
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.SKU == id);
             if (catalog == null)
             {
                 return NotFound();
@@ -161,7 +161,7 @@ namespace ToolWorkshop.Controllers
 
         private bool CatalogExists(int id)
         {
-            return _context.Catalogs.Any(e => e.id == id);
+            return _context.Catalogs.Any(e => e.SKU == id);
         }
     }
 }

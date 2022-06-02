@@ -15,11 +15,16 @@ namespace ToolWorkshop.Models
 
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Cantidad")]
-        public float Quantity => Temporal_Movements == null ? 0 : Temporal_Movements.Sum(ts => ts.Quantity);
+        public float Quantity => Temporal_Movements == null ? 0 : 999;
 
         [DataType(DataType.MultilineText)]
         [Display(Name = "Codigo")]
         public string EAN { get; set; }
-       
+
+        public Tool tool { get; set; }
+
+        public Catalog catalog { get; set; }
     }
+
+
 }

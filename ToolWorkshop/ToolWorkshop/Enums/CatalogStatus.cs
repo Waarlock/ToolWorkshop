@@ -2,6 +2,7 @@
 {    public enum CatalogStatus
     {
         AVAILABLE,
+        PICKED,
         UNAVAILABLE
     }
 }

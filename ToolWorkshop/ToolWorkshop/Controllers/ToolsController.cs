@@ -58,7 +58,7 @@ namespace ToolWorkshop.Controllers
                     Description = model.Description,
                     Name = model.Name,
                     EAN = model.EAN,
-                    Stock = model.Stock,
+                    ToolCatalog = model.ToolCatalog
                 };
 
                 tool.ToolCategories = new List<ToolCategory>()
@@ -112,15 +112,13 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-           
-
             ToolViewModel model = new()
             {
                 Description = tool.Description,
                 Id = tool.Id,
                 Name = tool.Name,
                 EAN = tool.EAN,
-                Stock = tool.Stock,
+                ToolCatalog = tool.ToolCatalog,
                 ToolImages = tool.ToolImages,
                 ToolCategories = tool.ToolCategories
             };
@@ -152,7 +150,7 @@ namespace ToolWorkshop.Controllers
                 tool.Description = model.Description;
                 tool.Name = model.Name;
                 tool.EAN = model.EAN;
-                tool.Stock = model.Stock;
+                tool.ToolCatalog = model.ToolCatalog;
                 _context.Update(tool);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

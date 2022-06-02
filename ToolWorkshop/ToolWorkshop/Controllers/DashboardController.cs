@@ -28,8 +28,10 @@ namespace ToolWorkshop.Controllers
           //  ViewBag.ConfirmedOrdersCount = _context.Sales.Where(o => o.OrderStatus == OrderStatus.Confirmado).Count();
 
             return View(await _context.Temporal_Movements
-                    .Include(u => u.User)
-                    .Include(p => p.Tool).ToListAsync());
+                    .Include(tm => tm.User)
+                    .Include(tm => tm.Details)
+                    .ThenInclude(d=> d.Catalog)
+                    .ThenInclude(c => c.Tool).ToListAsync());
         }
     }
 }

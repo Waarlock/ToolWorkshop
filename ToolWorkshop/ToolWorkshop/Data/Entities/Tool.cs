@@ -24,10 +24,11 @@ namespace ToolWorkshop.Data.Entities
         [MaxLength(150, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         public string Description { get; set; }
 
+        public virtual ICollection<Catalog>? ToolCatalog { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Inventario")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public float Stock { get; set; }
+        public float Stock => ToolCatalog == null ? 0 : ToolCatalog.Count;
 
         public ICollection<ToolCategory> ToolCategories { get; set; }
 
@@ -44,14 +45,7 @@ namespace ToolWorkshop.Data.Entities
         public string ImageFullPath => ToolImages == null || ToolImages.Count == 0
             ? $"https://localhost:7005/images/noimage.png"
             : ToolImages.FirstOrDefault().ImageFullPath;
-    }
-
-   // public ICollection<SaleDetail> SaleDetails { get; set; }
-
-    //public virtual ICollection<Category>? Categories { get; set; }
-
-
-    // public virtual ICollection<Catalog>? Catalogs { get; set; }
+    }    
 }
 
 

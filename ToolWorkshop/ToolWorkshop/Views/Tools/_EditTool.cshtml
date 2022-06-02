@@ -14,12 +14,6 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
-        <!--
-        <div class="form-group">
-            <label asp-for="CategoryId" class="control-label"></label>
-            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>-->
     </div>
     <div class="col-md-6">
         <div class="form-group">
@@ -34,11 +28,6 @@
             <span asp-validation-for="Stock" class="text-danger"></span>
         </div>
 
-        <!--<div class="form-group">
-            <label asp-for="ImageFile" class="control-label"></label>
-            <input asp-for="ImageFile" class="form-control" type="file" />
-            <span asp-validation-for="ImageFile" class="text-danger"></span>
-        </div>-->
     </div>
 </div>
 
@@ -50,6 +39,14 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Imágenes</h3>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label"></label>
+                    <input asp-for="ImageFile" class="form-control" type="file" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <div>
+                    <a asp-action="AddImage" asp-route-id="@Model?.Id" class="btn btn-outline-primary">Adicionar Imagen</a>
+                </div>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive table-striped" id="ImagesTable">
@@ -82,6 +79,14 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Categorías</h3>
+                 <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div>
+                    <a asp-action="AddCategory" asp-route-id="@Model?.Id" class="btn btn-outline-secondary">Adicionar Categoría</a>
+                </div>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive table-striped" id="CategoriesTable">

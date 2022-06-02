@@ -157,17 +157,19 @@ namespace ToolWorkshop.Migrations
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Catalog", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("SKU")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SKU"), 1L, 1);
 
                     b.Property<int>("PlanogramId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SKU")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("ToolId")
                         .HasColumnType("int");
@@ -175,7 +177,7 @@ namespace ToolWorkshop.Migrations
                     b.Property<Guid>("ToolImageId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("id");
+                    b.HasKey("SKU");
 
                     b.HasIndex("PlanogramId");
 
@@ -267,7 +269,18 @@ namespace ToolWorkshop.Migrations
                     b.Property<DateTime>("Start_DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Movements");
                 });
@@ -280,7 +293,7 @@ namespace ToolWorkshop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Catalogid")
+                    b.Property<int>("CatalogSKU")
                         .HasColumnType("int");
 
                     b.Property<int?>("MovementId")
@@ -290,7 +303,7 @@ namespace ToolWorkshop.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Retun_Remarks")
+                    b.Property<string>("Return_Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -299,7 +312,7 @@ namespace ToolWorkshop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Catalogid");
+                    b.HasIndex("CatalogSKU");
 
                     b.HasIndex("MovementId");
 
@@ -374,24 +387,19 @@ namespace ToolWorkshop.Migrations
                     b.Property<DateTime>("End_DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Quantity")
-                        .HasColumnType("real");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Start_DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ToolId")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ToolId");
 
                     b.HasIndex("UserId");
 
@@ -419,9 +427,6 @@ namespace ToolWorkshop.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
-
-                    b.Property<float>("Stock")
-                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -667,7 +672,7 @@ namespace ToolWorkshop.Migrations
                         .IsRequired();
 
                     b.HasOne("ToolWorkshop.Data.Entities.Tool", "Tool")
-                        .WithMany()
+                        .WithMany("ToolCatalog")
                         .HasForeignKey("ToolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -686,11 +691,22 @@ namespace ToolWorkshop.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("ToolWorkshop.Data.Entities.Movement", b =>
+                {
+                    b.HasOne("ToolWorkshop.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Movement_Detail", b =>
                 {
                     b.HasOne("ToolWorkshop.Data.Entities.Catalog", "Catalog")
                         .WithMany("MovementDetails")
-                        .HasForeignKey("Catalogid")
+                        .HasForeignKey("CatalogSKU")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -731,15 +747,11 @@ namespace ToolWorkshop.Migrations
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Temporal_Movement", b =>
                 {
-                    b.HasOne("ToolWorkshop.Data.Entities.Tool", "Tool")
-                        .WithMany()
-                        .HasForeignKey("ToolId");
-
                     b.HasOne("ToolWorkshop.Data.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Tool");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -830,6 +842,8 @@ namespace ToolWorkshop.Migrations
 
             modelBuilder.Entity("ToolWorkshop.Data.Entities.Tool", b =>
                 {
+                    b.Navigation("ToolCatalog");
+
                     b.Navigation("ToolCategories");
 
                     b.Navigation("ToolImages");
