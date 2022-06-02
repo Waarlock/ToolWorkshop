@@ -7,6 +7,7 @@ using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Enums;
 using ToolWorkshop.Helpers;
 using ToolWorkshop.Models;
+using Vereyon.Web;
 
 namespace ToolWorkshop.Controllers
 {
@@ -18,15 +19,17 @@ namespace ToolWorkshop.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly ICombosHelper _combosHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
         public UsersController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper,
-            ICombosHelper combosHelper, IMailHelper mailHelper)
+            ICombosHelper combosHelper, IMailHelper mailHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _userHelper = userHelper;
             _blobHelper = blobHelper;
             _combosHelper = combosHelper;
             _mailHelper = mailHelper;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -86,14 +89,15 @@ namespace ToolWorkshop.Controllers
                 Response response = _mailHelper.SendMail(
                     $"{model.FirstName} {model.LastName}",
                     model.Username,
-                    "Shopping - Confirmación de Email",
+                    "ToolWorkshop - Confirmación de Email",
                     $"<h1>ToolWorkshop - Confirmación de Email</h1>" +
                         $"Para habilitar el usuario por favor hacer click en el siguiente link:, " +
                         $"<hr/><br/><p><a href = \"{tokenLink}\">Confirmar Email</a></p>");
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "Las instrucciones para habilitar el administrador han sido enviadas al correo.";
-                    return View(model);
+                    _flashMessage.Info("Las instrucciones para recuperar la contraseña han sido enviadas a su correo.");
+                    return RedirectToAction(nameof(model));
+
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);

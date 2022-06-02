@@ -2,16 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
+using Vereyon.Web;
 
 namespace ToolWorkshop.Controllers
 {
     public class CitiesController : Controller
     {
         private readonly DataContext _context;
+        private readonly IFlashMessage _flashMessage;
 
-        public CitiesController(DataContext context)
+        public CitiesController(DataContext context, IFlashMessage flashMessage)
         {
             _context = context;
+            _flashMessage = flashMessage;
         }
 
         // GET: Cities
@@ -137,6 +140,7 @@ namespace ToolWorkshop.Controllers
             var city = await _context.Cities.FindAsync(id);
             _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
+            _flashMessage.Info("Registro Borrrado");
             return RedirectToAction(nameof(Index));
         }
 

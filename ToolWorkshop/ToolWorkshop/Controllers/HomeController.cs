@@ -7,6 +7,7 @@ using ToolWorkshop.Data;
 using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
 using ToolWorkshop.Models;
+using Vereyon.Web;
 
 namespace ToolWorkshop.Controllers
 {
@@ -15,13 +16,14 @@ namespace ToolWorkshop.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly IFlashMessage _flashMessage;
 
-
-        public HomeController(ILogger<HomeController> logger, DataContext context, IUserHelper userHelper)
+        public HomeController(ILogger<HomeController> logger, DataContext context, IUserHelper userHelper, IFlashMessage flashMessage)
         {
             _logger = logger;
             _context = context;
             _userHelper = userHelper;
+            _flashMessage = flashMessage;
         }
 
 
@@ -509,7 +511,7 @@ namespace ToolWorkshop.Controllers
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Info(exception.Message);
                     return View(model);
                 }
 
