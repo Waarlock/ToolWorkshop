@@ -6,6 +6,7 @@ using ToolWorkshop.Data.Entities;
 using ToolWorkshop.Helpers;
 using ToolWorkshop.Models;
 using Vereyon.Web;
+using static ToolWorkshop.Helpers.ModalHelper;
 //using ToolWorkshop.Web;
 //using static ToolWorkshop.Helpers.ModalHelper;
 
@@ -37,6 +38,8 @@ namespace ToolWorkshop.Controllers
                 .ThenInclude(pc => pc.Category)
                 .ToListAsync());
         }
+
+        [NoDirectAccess]
         public async Task<IActionResult> Create()
         {
             ToolViewModel model = new()
@@ -74,7 +77,16 @@ namespace ToolWorkshop.Controllers
                 {
                     _context.Add(tool);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    _flashMessage.Confirmation("Registro creado.");
+
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAllProducts", _context.Tools
+                        .Include(p => p.ToolImages)
+                        .Include(p => p.ToolCategories)
+                        .ThenInclude(pc => pc.Category).ToList())
+                    });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -94,15 +106,13 @@ namespace ToolWorkshop.Controllers
             }
 
             model.Categories = await _combosHelper.GetComboCategoriesAsync();
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        [NoDirectAccess]
+
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             Tool tool= await _context.Tools.Include(p => p.ToolImages)
                 .Include(p => p.ToolCategories)
@@ -305,7 +315,7 @@ namespace ToolWorkshop.Controllers
             if (ModelState.IsValid)
             {
                
-                ToolCategory productCategory = new()
+                ToolCategory toolCategory = new()
                 {
                     Category = await _context.Categories.FindAsync(model.CategoryId),
                     Tool = tool,
@@ -313,7 +323,7 @@ namespace ToolWorkshop.Controllers
 
                 try
                 {
-                    _context.Add(productCategory);
+                    _context.Add(toolCategory);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Details), new { Id = tool.Id });
                 }
@@ -322,8 +332,7 @@ namespace ToolWorkshop.Controllers
                     _flashMessage.Danger(exception.Message);
                 }
             }
-
-            
+   
            
                 List<Category> categories = tool.ToolCategories.Select(pc => new Category
                 {
@@ -356,14 +365,10 @@ namespace ToolWorkshop.Controllers
             return RedirectToAction(nameof(Details), new { Id = productCategory.Tool.Id });
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Tool tool= await _context.Tools
+            Tool tool = await _context.Tools
                 .Include(p => p.ToolCategories)
                 .Include(p => p.ToolImages)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -372,26 +377,16 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            return View(tool);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Tool model)
-        {
-            Tool tool = await _context.Tools
-                .Include(p => p.ToolImages)
-                .Include(p => p.ToolCategories)
-                .FirstOrDefaultAsync(p => p.Id == model.Id);
-
-            _context.Tools.Remove(tool);
-            await _context.SaveChangesAsync();
-
             foreach (ToolImage productImage in tool.ToolImages)
             {
                 await _blobHelper.DeleteBlobAsync(productImage.ImageId, "products");
             }
+
+            _context.Tools.Remove(tool);
+            await _context.SaveChangesAsync();
+            _flashMessage.Info("Registro borrado.");
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
