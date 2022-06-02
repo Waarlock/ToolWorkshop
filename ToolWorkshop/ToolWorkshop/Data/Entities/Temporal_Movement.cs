@@ -16,6 +16,7 @@ namespace ToolWorkshop.Data.Entities
         public DateTime Start_DateTime { get; set; }
 
         [Display(Name = "Fecha de Finalizacion")]
+        
         public DateTime End_DateTime { get; set; }
 
         [Display(Name = "Estado")]

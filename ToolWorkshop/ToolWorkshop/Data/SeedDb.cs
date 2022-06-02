@@ -66,6 +66,10 @@ namespace ToolWorkshop.Data
                         new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramH7, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramH7, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
                     },
                     new List<string>() { "Medición", "Precisión", "Mecánicas" },
@@ -74,6 +78,9 @@ namespace ToolWorkshop.Data
                 await AddToolAsync(
                     "Pulidora", "6F7845SE7234",
                     new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
@@ -86,6 +93,11 @@ namespace ToolWorkshop.Data
                     "Pie de Rey", "10R5445XE7001",
                     new List<Catalog>() {
                         new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
                     },
                     new List<string>() { "Medición" },
@@ -95,6 +107,11 @@ namespace ToolWorkshop.Data
                     "Taladro", "50T5455PF054",
                     new List<Catalog>() {
                         new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
                     },
                     new List<string>() { "Precisión" },
@@ -103,6 +120,11 @@ namespace ToolWorkshop.Data
                 await AddToolAsync(
                     "Torquimetro", "56Y565XL1011",
                     new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
                         new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
                     },
