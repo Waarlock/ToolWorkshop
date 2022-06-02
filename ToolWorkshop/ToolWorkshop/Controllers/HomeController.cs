@@ -284,10 +284,16 @@ namespace ToolWorkshop.Controllers
                 .Where(ts => ts.User.Id == user.Id)
                 .ToListAsync();
 
+            var details = temporal_Movements.SelectMany(tm => tm.Details);
+
+            IEnumerable<IGrouping<Tool, Movement_Detail>> detailsGrouped = details.GroupBy(d => d.Catalog.Tool);
+
             ShowCartViewModel model = new()
             {
                 User = user,
-                Temporal_Movements = temporal_Movements,
+                GeneralQuantity = details.Count(),
+                Movement_Details = details,
+                Movement_Details_Grouped = detailsGrouped
             };
 
             return View(model);
