@@ -16,7 +16,7 @@ namespace ToolWorkshop.Data.Entities
 
 
         [Display(Name = "# Productos")]
-        public int ProductsNumber => ToolCategories == null ? 0 : ToolCategories.Count();
+        public int ToolsNumber => ToolCategories == null ? 0 : ToolCategories.Count();
 
         //public virtual ICollection<Tool>? Tools { get; set; }
     }
