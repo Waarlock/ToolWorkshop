@@ -16,6 +16,21 @@ namespace ToolWorkshop.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public float Quantity { get; set; }
 
+        [Display(Name = "Nombre")]
+        [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Name { get; set; }
 
+        [Display(Name = "Descripción")]
+        [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Description { get; set; }
+
+        [Display(Name = "Codigo de Barras")]
+        [MaxLength(18, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+        public string EAN { get; set; }
+
+        public int ToolId { get; set; }
     }
 }

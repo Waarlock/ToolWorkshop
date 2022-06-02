@@ -32,6 +32,7 @@ namespace ToolWorkshop.Controllers
         {
             return View(await _context.Tools
                 .Include(p => p.ToolImages)
+                .Include(p => p.ToolCatalog)
                 .Include(p => p.ToolCategories)
                 .ThenInclude(pc => pc.Category)
                 .ToListAsync());

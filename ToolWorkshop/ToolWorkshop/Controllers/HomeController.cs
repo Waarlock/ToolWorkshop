@@ -477,6 +477,10 @@ namespace ToolWorkshop.Controllers
             EditTemporalMovementViewModel model = new()
             {
                 Id = temporal_Movement.Id,
+                ToolId = tool.Id,
+                Name = tool.Name,
+                Description = tool.Description,
+                EAN = tool.EAN,
                 Quantity = selectedTool.Count(),
                 Remarks = details.FirstOrDefault().Remarks
             };
@@ -494,31 +498,64 @@ namespace ToolWorkshop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditTemporalMovementViewModel model)
         {
-            if (id != model.Id)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            Tool tool = await _context.Tools.FindAsync(id);
+            if (tool == null)
             {
-                try
-                {
-                    Temporal_Movement temporal_Movement = await _context.Temporal_Movements.FindAsync(id);
-                    //temporal_Movement.Quantity = model.Quantity;
-                    //temporal_Movement.Remarks = model.Remarks;
-                    _context.Update(temporal_Movement);
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception exception)
-                {
-                    _flashMessage.Info(exception.Message);
-                    return View(model);
-                }
-
-                return RedirectToAction(nameof(ShowCart));
+                return NotFound();
             }
 
-            return View(model);
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                Temporal_Movement temporal_Movement = await _context.Temporal_Movements.FindAsync(id);
+                var details = _context.Temporal_Movements
+                .Include(tm => tm.Details)
+                .ThenInclude(d => d.Catalog)
+                .Where(tm => tm.User.Id == user.Id)
+                .SelectMany(tm => tm.Details);
+
+                var selectedTool = details
+                        .Where(d => d.Catalog.ToolId == tool.Id);
+
+                float currentQuantity = selectedTool.Count();
+
+                if (currentQuantity != model.Quantity)
+                {
+                    if(currentQuantity > model.Quantity)
+                    {
+                        float diff = currentQuantity - model.Quantity;
+                        for(float i = 0; i < diff; i++)
+                        {
+                            DecreaseQuantity(id);
+                        }
+                    }
+                    else
+                    {
+                        float diff = model.Quantity - currentQuantity;
+                        for (float i = 0; i < diff; i++)
+                        {
+                            IncreaseQuantity(id);
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                _flashMessage.Info(exception.Message);
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(ShowCart));
         }
 
 
