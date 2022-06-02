@@ -29,7 +29,7 @@ namespace ToolWorkshop.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Inventario")]
         public float Stock => ToolCatalog == null ? 0 : ToolCatalog.Count;
-
+    
         public ICollection<ToolCategory> ToolCategories { get; set; }
 
         [Display(Name = "Categorías")]

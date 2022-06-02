@@ -267,54 +267,7 @@ namespace ToolWorkshop.Controllers
                 };
             }
             
-            IEnumerable<Catalog> temporalCatalog = temporal_Movement.Details.Select(dt => dt.Catalog);
-            float availableTools = 0;
-
-            try
-            {
-                availableTools = _context.Catalogs.Count(c => c.Tool.Id == tool.Id && c.Status == Enums.CatalogStatus.AVAILABLE);
-            }
-            catch (NullReferenceException e)
-            {
-                availableTools = 0;
-            }
-
-            float requiredTools = 0;
-            try
-            {
-                requiredTools = temporalCatalog != null
-                    ? model.Quantity
-                    : temporalCatalog.Count(c => c.Tool.Id == tool.Id) + model.Quantity;
-            }
-            catch (NullReferenceException e)
-            {
-                requiredTools = model.Quantity;
-            }
-
-            if (availableTools >= requiredTools)
-            {
-                for (int i = 1; i <= model.Quantity; i++)
-                {
-                    Catalog currentCatalog = await _context.Catalogs.FirstOrDefaultAsync(c => c.Tool.Id == tool.Id && c.Status == Enums.CatalogStatus.AVAILABLE);
-                    currentCatalog.Status = Enums.CatalogStatus.PICKED;
-
-                    temporal_Movement.Details.Add(new Movement_Detail()
-                    {
-                        Catalog = await _context.Catalogs.FirstOrDefaultAsync(c => c.Tool.Id == tool.Id && c.Status == Enums.CatalogStatus.AVAILABLE),
-                        Remarks = model.Remarks == null ? "" : model.Remarks
-                    });
-                }
-            }
-
-            if (temporal_Movement.Id == 0)
-            {
-                _context.Temporal_Movements.Add(temporal_Movement);
-            }
-            else
-            {
-                _context.Temporal_Movements.Update(temporal_Movement);
-            }
-            await _context.SaveChangesAsync();
+           
             return RedirectToAction(nameof(Index));
         }
 
@@ -378,6 +331,7 @@ namespace ToolWorkshop.Controllers
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
                 .Include(tm => tm.Details)
                 .ThenInclude(d => d.Catalog)
+                .ThenInclude(c=> c.Tool)
                 .Where(tm => tm.User.Id == user.Id)
                 .Where(tm => tm.Status == Enums.MovementStatus.OPENED)
                 .FirstOrDefaultAsync();
@@ -390,20 +344,20 @@ namespace ToolWorkshop.Controllers
             IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
             IEnumerable<Catalog> selectedToolUnits = selectedDetails.Select(dt => dt.Catalog).Where(c=> c.ToolId == id);
 
+            bool result = false;
             if (selectedToolUnits != null &&  selectedToolUnits.Any() && selectedToolUnits.Count() > 1)
             {
-                Catalog currentCatalog = selectedToolUnits.FirstOrDefault();
-                temporal_Movement.Details.Remove(selectedDetails.FirstOrDefault(d=> d.Catalog == currentCatalog));
-                _context.Temporal_Movements.Update(temporal_Movement);
-
-                currentCatalog.Status = Enums.CatalogStatus.AVAILABLE;
-                _context.Catalogs.Update(currentCatalog);
-                await _context.SaveChangesAsync();
+                float newQuantity = selectedToolUnits.Count() - 1;
+                result = await SetToolQuantity(temporal_Movement, tool, newQuantity);
             }
-
-            return RedirectToAction(nameof(ShowCart));
+            
+            return result
+                ?  RedirectToAction(nameof(ShowCart))
+                : RedirectToAction(nameof(ShowCart))
+             ;
         }
 
+        
         public async Task<IActionResult> IncreaseQuantity(int? id)
         {
             if (id == null)
@@ -426,6 +380,7 @@ namespace ToolWorkshop.Controllers
             Temporal_Movement temporal_Movement = await _context.Temporal_Movements
                 .Include(tm => tm.Details)
                 .ThenInclude(d => d.Catalog)
+                .ThenInclude(c => c.Tool)
                 .Where(tm => tm.User.Id == user.Id)
                 .Where(tm => tm.Status == Enums.MovementStatus.OPENED)
                 .FirstOrDefaultAsync();
@@ -435,33 +390,20 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            float availableTools = 0;
-            try
-            {
-                availableTools = _context.Catalogs.Count(c => c.Tool.Id == id && c.Status == Enums.CatalogStatus.AVAILABLE);
-            }
-            catch (NullReferenceException e)
-            {
-                availableTools = 0;
-            }
+            IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
+            IEnumerable<Catalog> selectedToolUnits = selectedDetails.Select(dt => dt.Catalog).Where(c => c.ToolId == id);
 
-            float requiredTools = 1F;
-
-            if (availableTools >= requiredTools)
+            bool result = false;
+            if (selectedToolUnits != null)
             {
-                Catalog currentCatalog = await _context.Catalogs.FirstOrDefaultAsync(c => c.Tool.Id == (int)id && c.Status == Enums.CatalogStatus.AVAILABLE);
-                currentCatalog.Status = Enums.CatalogStatus.PICKED;
-
-                temporal_Movement.Details.Add(
-                new Movement_Detail()
-                {
-                    Catalog = currentCatalog,
-                    Remarks = ""
-                });
+                float newQuantity = selectedToolUnits.Count() + 1;
+                result = await SetToolQuantity(temporal_Movement, tool, newQuantity);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ShowCart));
+            return result
+                ? RedirectToAction(nameof(ShowCart))
+                : RedirectToAction(nameof(ShowCart))
+             ;
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -471,13 +413,40 @@ namespace ToolWorkshop.Controllers
                 return NotFound();
             }
 
-            Temporal_Movement temporalSale = await _context.Temporal_Movements.FindAsync(id);
-            if (temporalSale == null)
+            Tool tool = await _context.Tools.FindAsync(id);
+            if (tool == null)
             {
                 return NotFound();
             }
 
-            _context.Temporal_Movements.Remove(temporalSale);
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporal_Movement = await _context.Temporal_Movements
+                .Include(tm => tm.Details)
+                .ThenInclude(d => d.Catalog)
+                .ThenInclude(c => c.Tool)
+                .Where(tm => tm.User.Id == user.Id)
+                .Where(tm => tm.Status == Enums.MovementStatus.OPENED)
+                .FirstOrDefaultAsync();
+
+            if (temporal_Movement == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<Catalog> catalogs = temporal_Movement.Details.Select(d=> d.Catalog).Where(c=> c.ToolId == tool.Id);
+
+            foreach(Catalog c in catalogs)
+            {
+                c.Status = Enums.CatalogStatus.AVAILABLE;
+                _context.Catalogs.Update(c);
+            }
+
+            _context.Temporal_Movements.Remove(temporal_Movement);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ShowCart));
         }
@@ -567,37 +536,32 @@ namespace ToolWorkshop.Controllers
 
             try
             {
-                Temporal_Movement temporal_Movement = await _context.Temporal_Movements.FindAsync(id);
-                var details = _context.Temporal_Movements
-                .Include(tm => tm.Details)
-                .ThenInclude(d => d.Catalog)
-                .Where(tm => tm.User.Id == user.Id)
-                .SelectMany(tm => tm.Details);
+                Temporal_Movement temporal_Movement = await _context.Temporal_Movements
+                    .Include(tm => tm.Details)
+                    .ThenInclude(d => d.Catalog)
+                    .ThenInclude(c => c.Tool)
+                    .Where(tm => tm.User.Id == user.Id)
+                    .Where(tm => tm.Status == Enums.MovementStatus.OPENED)
+                    .FirstOrDefaultAsync();
 
-                var selectedTool = details
-                        .Where(d => d.Catalog.ToolId == tool.Id);
-
-                float currentQuantity = selectedTool.Count();
-
-                if (currentQuantity != model.Quantity)
+                if (null == temporal_Movement)
                 {
-                    if(currentQuantity > model.Quantity)
-                    {
-                        float diff = currentQuantity - model.Quantity;
-                        for(float i = 0; i < diff; i++)
-                        {
-                            DecreaseQuantity(id);
-                        }
-                    }
-                    else
-                    {
-                        float diff = model.Quantity - currentQuantity;
-                        for (float i = 0; i < diff; i++)
-                        {
-                            IncreaseQuantity(id);
-                        }
-                    }
+                    return NotFound();
                 }
+
+                IEnumerable<Movement_Detail> selectedDetails = temporal_Movement.Details;
+                IEnumerable<Catalog> selectedToolUnits = selectedDetails.Select(dt => dt.Catalog).Where(c => c.ToolId == id);
+
+                bool result = false;
+                if (selectedToolUnits != null && selectedToolUnits.Any() && selectedToolUnits.Count() > 1)
+                {
+                    result = await SetToolQuantity(temporal_Movement, tool, model.Quantity);
+                }
+
+                return result
+                    ? RedirectToAction(nameof(ShowCart))
+                    : RedirectToAction(nameof(ShowCart))
+                 ;
             }
             catch (Exception exception)
             {
@@ -609,6 +573,75 @@ namespace ToolWorkshop.Controllers
         }
 
 
+        private async Task<bool> SetToolQuantity(Temporal_Movement temporal_Movement, Tool tool, float newQuantity, String remarks = "")
+        {
+            IEnumerable<Catalog> temporalCatalog = temporal_Movement.Details.Select(dt => dt.Catalog);
+
+            float availableTools = _context.Catalogs.Include(c=> c.Tool).Count(c=> c.ToolId == tool.Id && c.Status == Enums.CatalogStatus.AVAILABLE);
+           
+            float requiredTools = 0;
+            try
+            {
+                float currentRequested = temporalCatalog.Count(c => c.Tool.Id == tool.Id);
+                requiredTools = newQuantity - currentRequested;
+            }
+            catch (NullReferenceException e)
+            {
+                requiredTools = newQuantity;
+            }
+
+            if (requiredTools == 0)
+            {
+                return true;
+            }
+
+            if (availableTools >= requiredTools)
+            {
+                if (requiredTools > 0)
+                {
+                    for (int i = 1; i <= requiredTools; i++)
+                    {
+                        Catalog currentCatalog = await _context.Catalogs.FirstOrDefaultAsync(c => c.Tool.Id == tool.Id && c.Status == Enums.CatalogStatus.AVAILABLE);
+                        currentCatalog.Status = Enums.CatalogStatus.PICKED;
+
+                        temporal_Movement.Details.Add(new Movement_Detail()
+                        {
+                            Catalog = currentCatalog,
+                            Remarks = remarks
+                        });
+                    }
+                }
+
+                if (requiredTools < 0)
+                {
+                    for (int i = -1; i >= requiredTools; i--)
+                    {
+                        Movement_Detail selectedDetail = temporal_Movement.Details.FirstOrDefault(d=> d.Catalog.ToolId == tool.Id);
+                        Catalog currentCatalog  = selectedDetail.Catalog;
+                        temporal_Movement.Details.Remove(selectedDetail);
+                        currentCatalog.Status = Enums.CatalogStatus.AVAILABLE;
+
+                        _context.Catalogs.Update(currentCatalog);
+                    }
+                }
+            }
+            else
+            {
+                //No hay suficientes herramientas
+                return false;
+            }
+
+            if (temporal_Movement.Id == 0)
+            {
+                _context.Temporal_Movements.Add(temporal_Movement);
+            }
+            else
+            {
+                _context.Temporal_Movements.Update(temporal_Movement);
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
