@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Diagnostics;
@@ -264,10 +265,153 @@ namespace ToolWorkshop.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        [Authorize]
+        public async Task<IActionResult> ShowCart()
+        {
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            List<Temporal_Movement>? temporal_Movements = await _context.Temporal_Movements
+                .Include(ts => ts.Tool)
+                .ThenInclude(p => p.ToolImages)
+                .Where(ts => ts.User.Id == user.Id)
+                .ToListAsync();
+
+            ShowCartViewModel model = new()
+            {
+                User = user,
+                Temporal_Movements = temporal_Movements,
+            };
+
+            return View(model);
+        }
         public IActionResult Privacy()
         {
             return View();
         }
+
+
+        public async Task<IActionResult> DecreaseQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporalSale = await _context.Temporal_Movements.FindAsync(id);
+            if (temporalSale == null)
+            {
+                return NotFound();
+            }
+
+            if (temporalSale.Quantity > 1)
+            {
+                temporalSale.Quantity--;
+                _context.Temporal_Movements.Update(temporalSale);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(ShowCart));
+        }
+
+        public async Task<IActionResult> IncreaseQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporalSale = await _context.Temporal_Movements.FindAsync(id);
+            if (temporalSale == null)
+            {
+                return NotFound();
+            }
+
+            temporalSale.Quantity++;
+            _context.Temporal_Movements.Update(temporalSale);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ShowCart));
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporalSale = await _context.Temporal_Movements.FindAsync(id);
+            if (temporalSale == null)
+            {
+                return NotFound();
+            }
+
+            _context.Temporal_Movements.Remove(temporalSale);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowCart));
+        }
+
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Temporal_Movement temporal_Movement = await _context.Temporal_Movements.FindAsync(id);
+            if (temporal_Movement == null)
+            {
+                return NotFound();
+            }
+
+            EditTemporalMovementViewModel model = new()
+            {
+                Id = temporal_Movement.Id,
+                Quantity = temporal_Movement.Quantity,
+                Remarks = temporal_Movement.Remarks,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditTemporalMovementViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Temporal_Movement temporal_Movement = await _context.Temporal_Movements.FindAsync(id);
+                    temporal_Movement.Quantity = model.Quantity;
+                    temporal_Movement.Remarks = model.Remarks;
+                    _context.Update(temporal_Movement);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                    return View(model);
+                }
+
+                return RedirectToAction(nameof(ShowCart));
+            }
+
+            return View(model);
+        }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
