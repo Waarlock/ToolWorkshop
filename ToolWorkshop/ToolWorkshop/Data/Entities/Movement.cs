@@ -19,9 +19,11 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Estado")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
-        MovementStatus status { get; set; }
+        public MovementStatus Status { get; set; }
 
-        //public User User { get; set; }
+        [Display(Name = "Solicitante")]
+        [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
+        public User User { get; set; }
 
         [Display(Name = "Detalles de Movimiento")]
         public virtual ICollection<Movement_Detail>? Details { get; set; }

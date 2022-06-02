@@ -28,7 +28,7 @@ namespace ToolWorkshop.Data
             await CheckRolesAsync();
             await CheckWarehousePlanogramAsync();
             await CheckUserAsync("1010", "Juan", "Vasquez", "juanv@yopmail.com", "322 311 4620", "Avenida Siempreviva", "Brad.jpg", UserType.Admin);
-            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", "liv.jpg", UserType.Admin);
+            await CheckUserAsync("1020", "Andres", "Martinez", "andrem@yopmail.com", "322 311 4620", "P sherman calle wallaby 42 sydney", "tony.jpg", UserType.Admin);
             await CheckUserAsync("2010", "Pedro", "Galindo", "pedrog@yopmail.com", "322 311 4620", "Privet Drive 4", "bob.jpg", UserType.User);
             await CheckToolAsync();
 
@@ -38,26 +38,91 @@ namespace ToolWorkshop.Data
         {
             if (!_context.Tools.Any())
             {
-                await AddToolAsync("Micrometro", "9F7845SE7874", 12F, new List<string>() { "Medición" }, new List<string>() { "micrometro.png", "micrometro2.png" });
-                await AddToolAsync("Caja de Herramienta", "9X7000R07874", 15F, new List<string>() { "Medición", "Precisión", "Mecánicas" }, new List<string>() { "CajaHerrammientas.png", "CajaHerrammientas2.png", "CajaHerrammientas3.png" });
-                await AddToolAsync("Pulidora", "6F7845SE7234", 3F, new List<string>() { "Precisión", "Corte" }, new List<string>() { "cortadora.png", "cortadora2.png" });
-                await AddToolAsync("Pie de Rey", "10R5445XE7001", 8F, new List<string>() { "Medición" }, new List<string>() { "PieDeRey.png", "PieDeRey2.png" });
-                await AddToolAsync("Taladro", "50T5455PF054", 3F, new List<string>() { "Precisión" }, new List<string>() { "taladro.png", "taladro2.png", "taladro3.png" });
-                await AddToolAsync("Torquimetro", "56Y565XL1011", 6F, new List<string>() { "Medición" }, new List<string>() { "torquimetro2.png" });
+                Planogram planogramZ3 = await _context.Planograms.FirstOrDefaultAsync(p => p.Name == "Estanteria Z3");
+                Planogram planogramA2 = await _context.Planograms.FirstOrDefaultAsync(p => p.Name == "Estanteria A2");
+                Planogram planogramB4 = await _context.Planograms.FirstOrDefaultAsync(p => p.Name == "Estanteria B4");
+                Planogram planogramH7 = await _context.Planograms.FirstOrDefaultAsync(p => p.Name == "Estanteria H7");
+
+
+                await AddToolAsync(
+                    "Micrometro", "9F7845SE7874",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    }, 
+                    new List<string>() { "Medición" },
+                    new List<string>() { "micrometro.png", "micrometro2.png" }
+                );
+                await AddToolAsync(
+                    "Caja de Herramienta", "9X7000R07874",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramH7, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    },
+                    new List<string>() { "Medición", "Precisión", "Mecánicas" },
+                    new List<string>() { "CajaHerramientas.png", "CajaHerramientas2.png", "CajaHerramientas3.png" }
+                );
+                await AddToolAsync(
+                    "Pulidora", "6F7845SE7234",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramB4, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    }, 
+                    new List<string>() { "Precisión", "Corte" },
+                    new List<string>() { "cortadora.png", "cortadora2.png" }
+                );
+                await AddToolAsync(
+                    "Pie de Rey", "10R5445XE7001",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    },
+                    new List<string>() { "Medición" },
+                    new List<string>() { "PieDeRey.png", "PieDeRey2.png" }
+                );
+                await AddToolAsync(
+                    "Taladro", "50T5455PF054",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    },
+                    new List<string>() { "Precisión" },
+                    new List<string>() { "taladro.png", "taladro2.png", "taladro3.png" }
+                );
+                await AddToolAsync(
+                    "Torquimetro", "56Y565XL1011",
+                    new List<Catalog>() {
+                        new Catalog() { Planogram = planogramZ3, Status = CatalogStatus.AVAILABLE },
+                        new Catalog() { Planogram = planogramA2, Status = CatalogStatus.AVAILABLE }
+                    },
+                    new List<string>() { "Medición" },
+                    new List<string>() { "torquimetro2.png" }
+                );
                 await _context.SaveChangesAsync();
             }
         }
 
-        private async Task AddToolAsync(string name, String EAN, float stock, List<string> categories, List<string> images)
+        private async Task AddToolAsync(string name, String EAN, List<Catalog> stock, List<string> categories, List<string> images)
         {
             Tool tool = new()
             {
                 Description = name,
                 Name = name,
                 EAN = EAN,
-                Stock = stock,
                 ToolCategories = new List<ToolCategory>(),
-                ToolImages = new List<ToolImage>()
+                ToolImages = new List<ToolImage>(),
+                ToolCatalog = stock
             };
 
             foreach (string? category in categories)

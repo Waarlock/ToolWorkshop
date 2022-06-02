@@ -22,12 +22,26 @@ namespace ToolWorkshop.Helpers
             List<SelectListItem> list = await _context.Catalogs.Select(c => new SelectListItem
             {
                 Text = c.FullName,
-                Value = c.id.ToString()
+                Value = c.SKU.ToString()
             })
                 .OrderBy(c => c.Text)
                 .ToListAsync();
 
             list.Insert(0, new SelectListItem { Text = "[Seleccione una herramienta...", Value = "0" });
+            return list;
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetComboPlanogramAsync(int planogramId)
+        {
+            List<SelectListItem> list = await _context.Planograms.Select(c => new SelectListItem
+            {
+                Text = c.FullName,
+                Value = c.Id.ToString()
+            })
+                .OrderBy(c => c.Text)
+                .ToListAsync();
+
+            list.Insert(0, new SelectListItem { Text = "[Seleccione una ubicacion...", Value = "0" });
             return list;
         }
 

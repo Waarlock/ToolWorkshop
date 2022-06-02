@@ -18,9 +18,10 @@ namespace ToolWorkshop.Data.Entities
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
         public Catalog Catalog { get; set; }
 
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Observaciones")]
         [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
 
         [Display(Name = "Estado")]
         [Required(ErrorMessage = "El Campo {0} es obligatorio.")]
@@ -28,7 +29,7 @@ namespace ToolWorkshop.Data.Entities
 
         [Display(Name = "Observaciones de Devolucion")]
         [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        public string? Retun_Remarks { get; set; }
+        public string? Return_Remarks { get; set; }
 
     }
 }

@@ -34,6 +34,9 @@ namespace ToolWorkshop.Data
             modelBuilder.Entity<City>().HasIndex("Name", "StateId").IsUnique();
             modelBuilder.Entity<Tool>().HasIndex(c => c.Name).IsUnique();
             modelBuilder.Entity<ToolCategory>().HasIndex("ToolId", "CategoryId").IsUnique();
+            modelBuilder.Entity<Catalog>().Property(c => c.Status).HasConversion<string>().HasMaxLength(30);
+            modelBuilder.Entity<Movement>().Property(m => m.Status).HasConversion<string>().HasMaxLength(30);
+            modelBuilder.Entity<Temporal_Movement>().Property(tm => tm.Status).HasConversion<string>().HasMaxLength(30);
         }
     }
 }
